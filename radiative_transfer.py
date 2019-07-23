@@ -97,10 +97,11 @@ def rt_layers(lam, T, T_0, tau):
     B_surf = planck_w(lam, T_0)
     return B_surf * np.exp(-tau) + B_lam * (1 - np.exp(-tau))
 
-def u_a(nu, nu_0, n_HI, n_e, rv, line='halpha'):
+def u_a(nu, nu_0, n_HI, n_e, Temp, rv, line='halpha'):
     broadening_constants = {'rad' : {'halpha' : 6.5e-14, 'hbeta' : 1, 'hgamma' : 1, 'hdelta' : 1},
                             'vdw' : {'halpha' : 4.4e-14, 'hbeta' : 1, 'hgamma' : 1, 'hdelta' : 1},
                             'stark' : {'halpha' : 1.17e-13, 'hbeta' : 1, 'hgamma' : 1, 'hdelta' : 1}}
+
     if line=='halpha':
 
         nu_0       = constants.c / ( 6562.8 * 1e-10 )
@@ -116,9 +117,9 @@ def u_a(nu, nu_0, n_HI, n_e, rv, line='halpha'):
     if line=='hbeta':
         nu_0       = constants.c / ( 4861.3 * 1e-10 )
         nu_0_rv    = nu_0 * (1. - rv / constants.c)
-        C_rad      = 8.2 * 1e-3 * 1e-10
-        C_vdw      = 5.5 * 1e-3 * 1e-10
-        C_stark    = 1.47 * 1e-2 * 1e-10
+        C_rad      = 1e6 * 1e-10
+        C_vdw      = 5.5 * 1e-3 * 1e-20
+        C_stark    = 1.47 * 1e-2 * 1e-20
         delta_nu   = ( 2 * constants.k * Temp / constants.m_p)**.5 * nu_0_rv/constants.c
         gamma_damp = C_rad + C_vdw * ( n_HI / 10**22 ) * ( Temp / 5000 )**0.3 + C_stark * ( n_e / 10**18 )**(2./3.)
         a          =1. / ( 4. * np.pi )
@@ -173,7 +174,7 @@ def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
     nu_0              = constants.c / balmer_properties['wavelength'][line]
     f_line            = balmer_properties['f_osc'][line]
 
-    u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, rv, line=line)
+    u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
     phi_nu = voigt(u, a) / ( np.pi**.5 * delta_nu )
     C = ( constants.h * Blu / (4. * np.pi) )
     C_osc = ( np.pi * constants.e**2 / (constants.m_e * constants.c ) )
@@ -211,7 +212,7 @@ if __name__=='__main__':
 
     ###### jet properties
 
-    jet_velocity        = 200. * 1e3 #m/s
+    jet_velocity        = 100. * 1e3 #m/s
     jet_velocity_axis   = 800. * 1e3
     jet_velocity_edge   = 10.  * 1e3
     jet_n               = np.array([1e20,1e18,1e16]) # m-3
@@ -228,9 +229,41 @@ if __name__=='__main__':
     jet_velocities      = jet_velocity * np.ones(jet_gridpoints) #jet_velocity_axis + (jet_velocity_edge - jet_velocity_axis)*(jet_angles/jet_angle_out)**2
     jet_radial_velocity = -1. * jet_velocities * np.sin(jet_angles)
 
+
+
+    ###### Synthetic spectra as stellar spectra
+
+    # wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_415971.txt')
+    # wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_415971.txt')
+    # wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_415971.txt')
+    wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_416105.txt')
+    wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_416105.txt')
+    wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_416105.txt')
+    # wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_399553.txt')
+    # wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_399553.txt')
+    # wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_399553.txt')
+    # wave_range_IRAS = wave_range_IRAS + (6562.8) * 1300/constants.c
+    wave_range, I_0    = np.loadtxt('IRAS19135+3937/synthetic/06250_g+1.0_m10p00_hr.txt')
+    wave_range        *= 1e-9 #m
+    wave_range_IRAS   *= 1e-10
+    I_0               *= 1e-7*1e10*1e4 #W m-2 m-1 sr-1
+    wave_gridpoints    = len(wave_range)
+
+    ###### H_alpha central wavelength and frequency
+    wave_0_halpha = 6562.8e-10 #Halpha wavelength in m
+    nu_0_halpha   = constants.c / wave_0_halpha
+
+    ###### blackbody background: wavelength range and corresponding intensities
+    # wave_gridpoints = 200
+    # wave_range      = np.linspace(6540., 6580., wave_gridpoints)*1e-10
+    # freq_range      = constants.c / wave_range
+    # I_0             = planck_w(wave_range, Temp_star)
+
     ###### jet number densities
+
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     colors  = ['darkblue', 'blue', 'lightblue']
+
     for (n,jet) in enumerate(jet_n):
         jet_densities = jet * jet_angles**8 / jet_angle_out
         # jet_densities = jet + 0 * jet_angles**8 / jet_angle_out
@@ -247,62 +280,41 @@ if __name__=='__main__':
             jet_n_HI_2[point]    = jet_densities[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, Temp, 1, 2, n=jet_n_e[point]) # HI in energy level n=2
             # jet_n_HI_
 
-        ###### Synthetic spectra as stellar spectra
 
-        # wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_415971.txt')
-        # wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_415971.txt')
-        # wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_415971.txt')
-        wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_416105.txt')
-        wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_416105.txt')
-        wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_416105.txt')
-        # wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_399553.txt')
-        # wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_399553.txt')
-        # wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_399553.txt')
-        # wave_range_IRAS = wave_range_IRAS + (6562.8) * 1300/constants.c
-        wave_range, I_0    = np.loadtxt('IRAS19135+3937/synthetic/06250_g+1.0_m10p00_hr.txt')
-        wave_range        *= 1e-9 #m
-        wave_range_IRAS   *= 1e-10
-        I_0               *= 1e-7*1e10*1e4 #W m-2 m-1 sr-1
-        wave_gridpoints    = len(wave_range)
-
-        ###### H_alpha central wavelength and frequency
-        wave_0_halpha = 6562.8e-10 #Halpha wavelength in m
-        nu_0_halpha   = constants.c / wave_0_halpha
-
-        ###### blackbody background: wavelength range and corresponding intensities
-        # wave_gridpoints = 200
-        # wave_range      = np.linspace(6540., 6580., wave_gridpoints)*1e-10
-        # freq_range      = constants.c / wave_range
-        # I_0             = planck_w(wave_range, Temp_star)
 
 
         I = []
         for i, wave in enumerate(wave_range):
-            I.append(0*I_0[i])
+            I.append(I_0[i])
             # I.append(0)
-            # if wave > 6520e-10 and wave < 6600e-10:
-            if wave > 4840e-10 and wave < 4880e-10:
+            if wave > 6520e-10 and wave < 6600e-10:
+            # if wave > 4840e-10 and wave < 4880e-10:
                 nu_test         = constants.c / wave
                 delta_s         = np.abs( jet_positions[1:] - jet_positions[0:-1] )
-                delta_tau = delta_s * opacity(nu_test, Temp, jet_n_HI[1:], jet_n_e[1:], jet_n_HI_2[1:], B_lu[0], jet_radial_velocity[1:], line='hbeta')
+                delta_tau = delta_s * opacity(nu_test, Temp, jet_n_HI[1:], jet_n_e[1:], jet_n_HI_2[1:], B_lu[0], jet_radial_velocity[1:], line='halpha')
                 for point in range(jet_gridpoints-1):
                     I[i]    = rt_isothermal(wave, Temp, I[i], delta_tau[point])
 
 
-        ax.plot(wave_range, np.array(I), label="absorbed spectrum, n=%3.2f m^-3"%(jet), color=colors[n])
-        ax.fill_between(wave_range, 0, np.array(I), alpha=0.1, color=colors[n])
+        ax.plot(wave_range*1e10, np.array(I), label="absorbed spectrum, n=%.1e m^-3"%(jet), color=colors[n])
+        ax.fill_between(wave_range*1e10, 0, np.array(I), alpha=0.1, color=colors[n])
         # ax.plot(wave_range, np.array(I_wrong), label="wrong")
         # ax.fill_between(wave_range, 0, I_0, alpha=0.1) #And fill beneath it with a light shade of the same colour
-        ax.set_title("Absorption of Balmer lines by jet", size=16)
+        ax.set_title(r"Absorption of H$\alpha$ lines by jet", size=16)
         # ax.set_xticklabels(ax.get_xticks()*1e9) #Change x-ticks to be in nm
         # ax.set_yticklabels(ax.get_yticks()*1e-9) #Change y-ticks to be in nm^-1
         ax.grid(lw=0.5)
 
+
+    ax.plot(wave_range*1e10, I_0, label="synthetic, T = 6250K", color = 'green')
+    # ax.fill_between(wave_range*1e10, 0, I_0, alpha=0.1, color='green')
     ax.legend()
+    ax.set_xlabel(r"Wavelength ($\AA$)")
+    ax.set_ylabel("Intensity W m^-2 m^-1 sr^-1")
+    # ax.set_xlim([4850,4870])
+    ax.set_xlim([6550,6575])
 
-    ax.plot(wave_range, I_0, label="synthetic, T = 6250K", color = 'green')
-    ax.fill_between(wave_range, 0, I_0, alpha=0.1, color='green')
-
+    ax.set_ylim([0, 3.1e13])
     plt.show()
 
 
