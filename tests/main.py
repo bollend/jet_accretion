@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/lhome/dylanb/astronomy/MCMC_main/MCMC_main')
 sys.path.append('/lhome/dylanb/astronomy/jet_accretion/jet_accretion')
+import argparse
 import numpy as np
 import matplotlib.pylab as plt
 import scipy
@@ -26,6 +27,23 @@ from astropy import units as u
 "   and its equivalent width and compare it with the observations.
 "   ============================================================================
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""
+==================================================
+Command line input
+==================================================
+"""
+args = sys.argv
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-o', dest='object_id',
+                    help='Object identifier')
+parser.add_argument('-l', dest='line', help='The spectral line')
+
+args          = parser.parse_args()
+object_id     = args.object_id
+spectral_line = args.line
 
 """
 ==================================================
@@ -59,7 +77,7 @@ days_to_sec     = 24*60*60      # 1day in seconds
 degr_to_rad     = 180./np.pi    # Degrees to radians
 ###### Read in the object specific and model parameters ########################
 parameters = {}
-with open('../jet_accretion/input_data/'+str(nameobject)+'/'+str(nameobject)+'.dat') as f:
+with open('../jet_accretion/input_data/'+str(object_id)+'/'+str(object_id)+'.dat') as f:
     lines  = f.readlines()[2:]
 
 for l in lines:
@@ -79,14 +97,14 @@ T0                  = eval(parameters['T0'])       # Time of periastron (days)
 period              = eval(parameters['period'])   # period (days)
 primary_asini       = eval(parameters['asini'])    # asini of the primary (AU)
 primary_rad_vel     = eval(parameters['K_p'])      # Radial velocity primary (km s^-1)
-primary_sma_a1      = eval(parametres['R_p'])      # SMA of the primary (a1)
+primary_sma_a1      = eval(parameters['R_p'])      # SMA of the primary (a1)
 primary_mass        = eval(parameters['m_p'])	   # mass primary (M_sol)
 mass_function       = eval(parameters['fm'])       # mass function (AU)
 angular_frequency   = 2. * np.pi / period          # angular frequency (days^-1)
 gridpoints_LOS      = eval(parameters['points_pathlength']) # number of points along the path length trough the jet
 gridpoints_primary  = eval(parameters['points_primary'])    # number of points on the primary star
 ###### Jet model solution parameters ###########################################
-jet_type            = eval(parameters['jet_type'])               # None
+jet_type            = parameters['jet_type']                     # None
 inclination         = eval(parameters['incl']) * degr_to_rad     # radians
 jet_angle           = eval(parameters['alp']) * degr_to_rad      # radians
 const_optical_depth = eval(parameters['const_optical_depth'])    # None
@@ -97,12 +115,13 @@ primary_radius_au   = eval(parameters['radius_primary_au'])      # AU
 ###### Binary system and stellar parameters from jet solution ##################
 primary_sma_AU      = primary_asini / np.sin(inclination) # SMA of the primary (AU)
 primary_max_vel     = primary_rad_vel / np.sin(inclination) # Orbital velocity (km/s)
-secondary_mass      = calc_mass_sec(primary_mass, inclination, mass_function) # (AU)
+secondary_mass      = geometry_binary.calc_mass_sec(primary_mass, inclination, mass_function) # (AU)
 mass_ratio          = primary_mass / secondary_mass       # None
 secondary_sma_AU    = primary_sma_AU * mass_ratio         # SMA of the secondary (AU)
 secondary_rad_vel   = primary_rad_vel * mass_ratio        # Radial velocity secondary (km/s)
 secondary_max_vel   = primary_max_vel * mass_ratio        # Orbital velocity secondary (km/s)
-T_inf               = T0_to_IC(omega, ecc, period, T0)
+T_inf               = geometry_binary.T0_to_IC(omega, ecc, period, T0)
+
 """
 ===============
 Stellar spectra
@@ -110,32 +129,33 @@ Stellar spectra
 """
 
 ###### Observed spectra, background spectra, and wavelength region #############
-star     = 'IRAS19135+3937'
 spectrum = '416105'
 phase    = 45
-with open('../jet_accretion/input_data/'+star+'_observed_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
     spectra_observed    = pickle.load(f)
-with open('../jet_accretion/input_data/'+star+'_wavelength_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
     spectra_wavelengths = pickle.load(f)
-with open('../jet_accretion/input_data/'+star+'_init_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'_init_'+line+'.txt', 'rb') as f:
     spectra_background  = pickle.load(f)
 phases = list()
 spectra = list()
 for ph in spectra_observed.keys():
     phases.append(ph)
-    for
+    for spectrum in spectra_observed[ph].keys():
+        spectra.append(spectrum)
+
 
 ###### uncertainty on the data #################################################
 
 standard_deviation = {}
-with open('../jet_accretion/input_data/'+star+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
     signal_to_noise = pickle.load(f)
-with open('./jet_accretion/input_data/'+star+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
     uncertainty_background = pickle.load(f)
 
 for ph in uncertainty_background:
     standard_deviation[ph] = {}
-    for spectrum in uncertainty_background[p]:
+    for spectrum in uncertainty_background[ph]:
         standard_deviation[ph][spectrum] = \
                     2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
 
@@ -157,7 +177,7 @@ Create post-AGB star with a Fibonacci grid
 ==========================================
 """
 import Star
-postAGB = Star.Star(primary_radius_au, jet_centre, inclination, gridpoints_primary)
+postAGB = Star.Star(primary_radius_au, centre, inclination, gridpoints_primary)
 postAGB._set_grid()
 postAGB._set_grid_location()
 """
