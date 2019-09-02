@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/lhome/dylanb/astronomy/MCMC_main/MCMC_main')
+sys.path.append('/lhome/dylanb/astronomy/jet_accretion/jet_accretion')
 import numpy as np
 import matplotlib.pylab as plt
 import scipy
@@ -7,44 +10,186 @@ from sympy import mpmath as mp
 import ionisation_excitation as ie
 import radiative_transfer as rt
 import pickle
-import sys
-sys.path.append('/lhome/dylanb/astronomy/MCMC_main/MCMC_main')
 import Cone
+import geometry_binary
 from radiative_transfer import *
 from astropy import units as u
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"   ============================================================================
+"   We first initialise the spectral line properties, input data (spectra),
+"   orbital parameters, and jet parameters that we need to calculate the
+"   absorption by the jet.
+"   Next, create the post-AGB star (as a Fibonacci-grid), the binary system and
+"   the jet configuration.
+"   We then calculate the amount of absorption by the jet in the spectral line,
+"   and its equivalent width and compare it with the observations.
+"   ============================================================================
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """
+==================================================
 Balmer line properties (ionisation and excitation)
+==================================================
 """
 
-###### Hydrogen properties
+###### Hydrogen properties #####################################################
 E_ionisation_H      = np.array([13.6, 0]) # ionisation energy in eV
 E_levels_H          = {1: np.array([0, 10.2, 12.1, 12.76]), 2: np.array([0])} # (eV) energy levels of all excitation states for each ionisation level
 degeneracy_H        = {1: np.array([2, 8, 18, 32]), 2: np.array([1])} # Degeneracy of the excitation states
 
-###### Balmer properties, i.e., einstein coefficients for Halpha, Hbeta, Hgamma, and Hdelta
+###### Balmer properties, i.e., einstein coefficients for Halpha, Hbeta, #######
+###### Hgamma, and Hdelta ######################################################
 
 wave_0 = {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10,\
          'hdelta': 4101.73e-10}
 # B_lu = np.array([4.568e14, 6.167e14, 6.907e14, 7.309e14])
 B_lu = np.array([1.6842e+21]) # from wikipedia
-line = 'hbeta'
+line = 'halpha'
+
 
 """
-Synthetic spectra as stellar spectra
+================================
+Binary system and jet properties
+================================
+"""
+AU              = 1.496e+11     # 1AU in m
+AU_to_km        = 1.496e+08     # 1AU in km
+days_to_sec     = 24*60*60      # 1day in seconds
+degr_to_rad     = 180./np.pi    # Degrees to radians
+###### Read in the object specific and model parameters ########################
+parameters = {}
+with open('../jet_accretion/input_data/'+str(nameobject)+'/'+str(nameobject)+'.dat') as f:
+    lines  = f.readlines()[2:]
+
+for l in lines:
+    split_lines       = l.split()
+    title             = split_lines[0]
+    value             = split_lines[1]
+    parameters[title] = value
+
+###### Wavelength ##############################################################
+central_wavelength  = eval(parameters['w_c_'+str(line)])        # (angstrom)
+w_begin             = eval(parameters['w_begin_'+str(line)])    # (angstrom)
+w_end               = eval(parameters['w_end_'+str(line)])      # (angstrom)
+###### Binary system and stellar parameters ####################################
+omega               = eval(parameters['omega'])    # Argument of periastron (degrees)
+ecc                 = eval(parameters['ecc'])      # Eccentricity
+T0                  = eval(parameters['T0'])       # Time of periastron (days)
+period              = eval(parameters['period'])   # period (days)
+primary_asini       = eval(parameters['asini'])    # asini of the primary (AU)
+primary_rad_vel     = eval(parameters['K_p'])      # Radial velocity primary (km s^-1)
+primary_sma_a1      = eval(parametres['R_p'])      # SMA of the primary (a1)
+primary_mass        = eval(parameters['m_p'])	   # mass primary (M_sol)
+mass_function       = eval(parameters['fm'])       # mass function (AU)
+angular_frequency   = 2. * np.pi / period          # angular frequency (days^-1)
+gridpoints_LOS      = eval(parameters['points_pathlength']) # number of points along the path length trough the jet
+gridpoints_primary  = eval(parameters['points_primary'])    # number of points on the primary star
+###### Jet model solution parameters ###########################################
+jet_type            = eval(parameters['jet_type'])               # None
+inclination         = eval(parameters['incl']) * degr_to_rad     # radians
+jet_angle           = eval(parameters['alp']) * degr_to_rad      # radians
+const_optical_depth = eval(parameters['const_optical_depth'])    # None
+velocity_centre     = eval(parameters['velocity_centre'])        # km s^-1
+velocity_edge       = eval(parameters['velocity_edge'])          # km s^-1
+primary_radius_a1   = eval(parameters['radius_primary_a1'])      # a1
+primary_radius_au   = eval(parameters['radius_primary_au'])      # AU
+###### Binary system and stellar parameters from jet solution ##################
+primary_sma_AU      = primary_asini / np.sin(inclination) # SMA of the primary (AU)
+primary_max_vel     = primary_rad_vel / np.sin(inclination) # Orbital velocity (km/s)
+secondary_mass      = calc_mass_sec(primary_mass, inclination, mass_function) # (AU)
+mass_ratio          = primary_mass / secondary_mass       # None
+secondary_sma_AU    = primary_sma_AU * mass_ratio         # SMA of the secondary (AU)
+secondary_rad_vel   = primary_rad_vel * mass_ratio        # Radial velocity secondary (km/s)
+secondary_max_vel   = primary_max_vel * mass_ratio        # Orbital velocity secondary (km/s)
+T_inf               = T0_to_IC(omega, ecc, period, T0)
+"""
+===============
+Stellar spectra
+===============
 """
 
-star                    = 'IRAS19135+3937'
-spectrum                = '416105'
-wave_range_IRAS, I_IRAS_obs = np.loadtxt(star+'/halpha/'+star+'_'+spectrum+'.txt')
+###### Observed spectra, background spectra, and wavelength region #############
+star     = 'IRAS19135+3937'
+spectrum = '416105'
+phase    = 45
+with open('../jet_accretion/input_data/'+star+'_observed_'+line+'.txt', 'rb') as f:
+    spectra_observed    = pickle.load(f)
+with open('../jet_accretion/input_data/'+star+'_wavelength_'+line+'.txt', 'rb') as f:
+    spectra_wavelengths = pickle.load(f)
+with open('../jet_accretion/input_data/'+star+'_init_'+line+'.txt', 'rb') as f:
+    spectra_background  = pickle.load(f)
+phases = list()
+spectra = list()
+for ph in spectra_observed.keys():
+    phases.append(ph)
+    for
+
+###### uncertainty on the data #################################################
+
+standard_deviation = {}
+with open('../jet_accretion/input_data/'+star+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
+    signal_to_noise = pickle.load(f)
+with open('./jet_accretion/input_data/'+star+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
+    uncertainty_background = pickle.load(f)
+
+for ph in uncertainty_background:
+    standard_deviation[ph] = {}
+    for spectrum in uncertainty_background[p]:
+        standard_deviation[ph][spectrum] = \
+                    2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
+
+###### Cut the wavelength region if necessary ##################################
+
+wavmin = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_begin))
+wavmax = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_end))
+spectra_wavelengths = spectra_wavelengths[wavmin:wavmax]
+
+for ph in spectra_observed:
+    for spectrum in spectra_observed[ph]:
+        spectra_observed[ph][spectrum]   = spectra_observed[ph][spectrum][wavmin:wavmax]
+        spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
+        standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
 
 """
-Jet properties
+==========================================
+Create post-AGB star with a Fibonacci grid
+==========================================
 """
+import Star
+postAGB = Star.Star(primary_radius_au, jet_centre, inclination, gridpoints_primary)
+postAGB._set_grid()
+postAGB._set_grid_location()
+"""
+=======================
+Create the binary orbit
+=======================
+"""
+primary_orbit = {}
+secondary_orbit = {}
 
-jet = Cone.Stellar_jet_simple(78.8/180.*np.pi, 75.9/180.*np.pi, np.array([0,1,0]), \
-                            1210, 11, 'simple_stellar_jet')
+for ph in phases:
+    prim_pos, sec_pos, prim_vel, sec_vel = pos_vel_primary_secondary(ph, period,
+                                           omega, ecc, primary_sma_AU,
+                                           secondary_sma_AU, T_inf, T0)
+    primary_orbit[ph]               = {}
+    primary_orbit[ph]['position']   = prim_pos
+    primary_orbit[ph]['velocity']   = prim_vel
+    secondary_orbit[ph]['position'] = sec_pos
+    secondary_orbit[ph]['velocity'] = sec_vel
+
+
+
+
+jet = Cone.Stellar_jet_simple(inclination/180.*np.pi,
+                             jet_angle/180.*np.pi,
+                             np.array([0,1,0]),
+                             velocity_centre,
+                             velocity_edge,
+                             jet_type)
 print(jet)
+
+
 
 
 """
