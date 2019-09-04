@@ -25,9 +25,10 @@ velocity_centre     1210              km s^-1
 velocity_edge       11                km s^-1
 radius_primary_a1    0.66              a1
 radius_primary_au   0.1386            AU
+T_eff               6250              K
 phi                 0.                degrees
-p                   2
-constant            8
+c_vel                2
+c_den               8
 BJD1                1455700.             days
 BJD2                3456200             days
 w_c_halpha          6562.8
@@ -41,7 +42,7 @@ w_begin_hbeta       4820.
 w_end_hbeta         4865.
 wavelength_bins     801
 velocity_range      2000.
-points_pathlength   2000
+points_pathlength   20
 points_primary      100
 sigma_clip          True
 sigma_upper         2.2
