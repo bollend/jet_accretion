@@ -16,8 +16,8 @@ import geometry_binary
 from radiative_transfer import *
 from astropy import units as u
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"   ============================================================================
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    ============================================================================
 "   We first initialise the spectral line properties, input data (spectra),
 "   orbital parameters, and jet parameters that we need to calculate the
 "   absorption by the jet.
@@ -25,8 +25,8 @@ from astropy import units as u
 "   the jet configuration.
 "   We then calculate the amount of absorption by the jet in the spectral line,
 "   and its equivalent width and compare it with the observations.
-"   ============================================================================
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+    ============================================================================
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """
 ==================================================
@@ -74,7 +74,7 @@ Binary system and jet properties
 AU              = 1.496e+11     # 1AU in m
 AU_to_km        = 1.496e+08     # 1AU in km
 days_to_sec     = 24*60*60      # 1day in seconds
-degr_to_rad     = 180./np.pi    # Degrees to radians
+degr_to_rad     = np.pi/180.    # Degrees to radians
 ###### Read in the object specific and model parameters ########################
 parameters = {}
 with open('../jet_accretion/input_data/'+str(object_id)+'/'+str(object_id)+'.dat') as f:
@@ -129,13 +129,13 @@ Stellar spectra
 """
 
 ###### Observed spectra, background spectra, and wavelength region #############
-spectrum = '416105'
-phase    = 45
-with open('../jet_accretion/input_data/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
+spectrum_test = '416105'
+phase_test    = 45
+with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
     spectra_observed    = pickle.load(f)
-with open('../jet_accretion/input_data/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
     spectra_wavelengths = pickle.load(f)
-with open('../jet_accretion/input_data/'+object_id+'_init_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_init_'+line+'.txt', 'rb') as f:
     spectra_background  = pickle.load(f)
 phases = list()
 spectra = list()
@@ -171,15 +171,7 @@ for ph in spectra_observed:
         spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
         standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
 
-"""
-==========================================
-Create post-AGB star with a Fibonacci grid
-==========================================
-"""
-import Star
-postAGB = Star.Star(primary_radius_au, centre, inclination, gridpoints_primary)
-postAGB._set_grid()
-postAGB._set_grid_location()
+
 """
 =======================
 Create the binary orbit
@@ -189,25 +181,38 @@ primary_orbit = {}
 secondary_orbit = {}
 
 for ph in phases:
-    prim_pos, sec_pos, prim_vel, sec_vel = pos_vel_primary_secondary(ph, period,
-                                           omega, ecc, primary_sma_AU,
+    prim_pos, sec_pos, prim_vel, sec_vel = geometry_binary.pos_vel_primary_secondary(
+                                           ph, period, omega, ecc, primary_sma_AU,
                                            secondary_sma_AU, T_inf, T0)
     primary_orbit[ph]               = {}
+    secondary_orbit[ph]             = {}
     primary_orbit[ph]['position']   = prim_pos
     primary_orbit[ph]['velocity']   = prim_vel
     secondary_orbit[ph]['position'] = sec_pos
     secondary_orbit[ph]['velocity'] = sec_vel
 
 
+"""
+==========================================
+Create post-AGB star with a Fibonacci grid
+==========================================
+"""
+import Star
+postAGB = Star.Star(primary_radius_au, primary_orbit[phase_test]['position'], inclination, gridpoints_primary)
+postAGB._set_grid()
+postAGB._set_grid_location()
 
+"""
+==============
+Create the jet
+==============
+"""
 
-jet = Cone.Stellar_jet_simple(inclination/180.*np.pi,
-                             jet_angle/180.*np.pi,
-                             np.array([0,1,0]),
-                             velocity_centre,
-                             velocity_edge,
-                             jet_type)
+jet = Cone.Stellar_jet_simple(inclination, jet_angle,
+                              velocity_centre, velocity_edge,
+                              jet_type, jet_centre=secondary_orbit[phase_test]['position'])
 print(jet)
+
 
 
 
