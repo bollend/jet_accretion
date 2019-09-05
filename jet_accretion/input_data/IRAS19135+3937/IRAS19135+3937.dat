@@ -66,6 +66,7 @@ ndim                6
 nwalkers            128
 niter               5000
 photospheric        '6000_10_m10p00'
+synthetic           06250_g+1.0_m10p00_hr.txt
 template            'interp2'
 previous_walkers_s  False
 previous_walkers_e  False
