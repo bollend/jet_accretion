@@ -13,6 +13,7 @@ import radiative_transfer as rt
 import pickle
 import Cone
 import geometry_binary
+import scale_intensity
 from radiative_transfer import *
 from astropy import units as u
 
@@ -87,9 +88,9 @@ for l in lines:
     parameters[title] = value
 
 ###### Wavelength ##############################################################
-central_wavelength  = eval(parameters['w_c_'+str(line)])        # (angstrom)
-w_begin             = eval(parameters['w_begin_'+str(line)])    # (angstrom)
-w_end               = eval(parameters['w_end_'+str(line)])      # (angstrom)
+central_wavelength  = eval(parameters['w_c_'+str(line)])            # (angstrom)
+w_begin             = eval(parameters['w_begin_'+str(line)])*1e-10  # (angstrom)
+w_end               = eval(parameters['w_end_'+str(line)])*1e-10    # (angstrom)
 ###### Binary system and stellar parameters ####################################
 omega               = eval(parameters['omega'])    # Argument of periastron (degrees)
 ecc                 = eval(parameters['ecc'])      # Eccentricity
@@ -145,8 +146,8 @@ phases = list()
 spectra = list()
 for ph in spectra_observed.keys():
     phases.append(ph)
-    for spectrum in spectra_observed[ph].keys():
-        spectra.append(spectrum)
+    for spec in spectra_observed[ph].keys():
+        spectra.append(spec)
 
 ###### The correct intensity level of the spectra from the       ###############
 ###### synthetic spectra. We fit a straight line to the relevant ###############
@@ -158,15 +159,21 @@ spectra_synth_wavelengths, spectra_synth_I = np.loadtxt(
 spectra_synth_wavelengths *= 1e-9 # m
 spectra_synth_I           *= 1e-7*1e10*1e4 # W m-2 m-1 sr-1
 
-wave_min_a = wave_0[line] - 200e-10
-wave_min_b = wave_0[line] - 100e-10
-wave_max_a = wave_0[line] + 100e-10
-wave_max_b = wave_0[line] + 200e-10
-median_I_low = np.median(spectra_synth_I[np.where((spectra_synth_wavelengths > wave_min_a) & (spectra_synth_wavelengths < wave_min_b))])
-median_I_high  = np.median(spectra_synth_I[np.where((spectra_synth_wavelengths > wave_max_a) & (spectra_synth_wavelengths < wave_max_b))])
-6562.8-6450
-
-
+spectra_background_I = {}   # The background spectra with the correct intensity (W m-2 m-1 sr-1)
+spectra_observed_I   = {}
+print(spectra_observed)
+print(phases)
+for ph in phases:
+    spectra_background_I[ph] = {}
+    for spec in spectra_observed[ph].keys():
+        spectra_background_I[ph][spec] = scale_intensity.scale_intensity(wave_0[line],
+                                         spectra_synth_wavelengths,
+                                         spectra_synth_I, spectra_wavelengths,
+                                         spectra_background[ph][spec])
+        spectra_observed_I[ph][spec]   = scale_intensity.scale_intensity(wave_0[line],
+                                         spectra_synth_wavelengths,
+                                         spectra_synth_I, spectra_wavelengths,
+                                         spectra_observed[ph][spec])
 ###### uncertainty on the data #################################################
 
 standard_deviation = {}
@@ -183,15 +190,15 @@ for ph in uncertainty_background:
 
 ###### Cut the wavelength region if necessary ##################################
 
-wavmin = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_begin))
-wavmax = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_end))
-spectra_wavelengths = spectra_wavelengths[wavmin:wavmax]
-
-for ph in spectra_observed:
-    for spectrum in spectra_observed[ph]:
-        spectra_observed[ph][spectrum]   = spectra_observed[ph][spectrum][wavmin:wavmax]
-        spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
-        standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
+# wavmin = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_begin))
+# wavmax = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_end))
+# spectra_wavelengths = spectra_wavelengths[wavmin:wavmax]
+#
+# for ph in spectra_observed:
+#     for spectrum in spectra_observed[ph]:
+#         spectra_observed[ph][spectrum]   = spectra_observed[ph][spectrum][wavmin:wavmax]
+#         spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
+#         standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
 
 
 """
@@ -234,17 +241,21 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               velocity_centre, velocity_edge,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
+jet._set_gridpoints(primary_orbit[phase_test]['position'], gridpoints_LOS)
+jet._set_gridpoints_unit_vector()
+jet._set_gridpoints_polar_angle()
 
 ###### Jet temperature, velocity and density ###################################
 jet_temperature         = 4000      # The jet temperature (K)
 jet_density_max         = 1e18      # The jet number density at its outer edge (m^-3)
 jet_density_scaled      = jet.density(gridpoints_LOS, power_density)   # The scaled number density of the jet
 jet_density             = jet_density_scaled*jet.gridpoints[:,2]*jet_density_max   # The number density of the jet at each gridpoint (m^-3)
-jet_velocity            = jet.velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
+jet_velocity            = jet.poloidal_velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
 jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, secondary_rad_vel) # Radial velocity of each gridpoint (km/s)
 jet_radvel_m_per_s      = jet_radvel_km_per_s * 1000 # Radial velocity of each gridpoint (m/s)
 jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
-jet_delta_gridpoints_m  = jet_delta_gridpoints * AU  # The length of each gridpoint (m)
+jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
+
 """
 Synthetic line profile and EW for a specific object given a temperature and density
 """
@@ -264,29 +275,28 @@ for point, d in enumerate(jet_density):
 
 intensity = []
 for wavebin, wave in enumerate(spectra_wavelengths):
-    intensity.append(spectra_background[phase][spectrum][wavebin])
-    if wave > 6520e-10 and wave < 6600e-10:
-        frequency       = constants.c / wave
-        delta_tau       = jet_delta_gridpoints_m \
-                          * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
-                                    jet_n_HI_2[1:], B_lu[0],
-                                    jet_radvel_m_per_s[1:], line=line)
+    intensity.append(spectra_background_I[phase_test][spectrum_test][wavebin])
+    # if wave > 6520e-10 and wave < 6600e-10:
+    frequency       = constants.c / wave
+    delta_tau       = jet_delta_gridpoints_m \
+                      * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
+                                jet_n_HI_2[1:], B_lu[0],
+                                jet_radvel_m_per_s[1:], line=line)
 
-        for point in range(gridpoints_LOS-1):
-            intensity[wavebin] = rt_isothermal(wave, jet_temperature, intensity[wavebin], delta_tau[point])
+    for point in range(gridpoints_LOS-1):
+        intensity[wavebin] = rt_isothermal(wave, jet_temperature, intensity[wavebin], delta_tau[point])
 
 
-ax.plot(wave_range*1e10, np.array(intensity), label="absorbed spectrum, n=%.1e m^-3"%(jet_density_max))
-ax.fill_between(wave_range*1e10, 0, np.array(intensity), alpha=0.1)
+ax.plot(spectra_wavelengths*1e10, np.array(intensity), label="absorbed spectrum, n=%.1e m^-3"%(jet_density_max))
+ax.fill_between(spectra_wavelengths*1e10, 0, np.array(intensity), alpha=0.1)
+ax.plot(spectra_wavelengths*1e10, spectra_observed_I[phase_test][spectrum_test]*1e-7*1e10*1e4, label="synthetic photospheric line")
 # ax.plot(wave_range, np.array(I_wrong), label="wrong")
 # ax.fill_between(wave_range, 0, I_0, alpha=0.1) #And fill beneath it with a light shade of the same colour
 ax.set_title(r"Absorption of H$\alpha$ lines by jet", size=16)
 # ax.set_xticklabels(ax.get_xticks()*1e9) #Change x-ticks to be in nm
 # ax.set_yticklabels(ax.get_yticks()*1e-9) #Change y-ticks to be in nm^-1
 ax.grid(lw=0.5)
-
-
-ax.plot(wave_range*1e10, I_0, label="synthetic, T = 6250K", color = 'green')
+ax.plot(spectra_wavelengths*1e10, spectra_background_I[phase_test][spectrum_test], label="synthetic, T = 6250K", color = 'green')
 # ax.fill_between(wave_range*1e10, 0, I_0, alpha=0.1, color='green')
 ax.legend()
 ax.set_xlabel(r"Wavelength ($\AA$)")
@@ -294,7 +304,7 @@ ax.set_ylabel("Intensity W m^-2 m^-1 sr^-1")
 # ax.set_xlim([4850,4870])
 ax.set_xlim([6550,6575])
 
-ax.set_ylim([0, 3.1e13])
+ax.set_ylim([0, 5.1e13])
 plt.show()
 
 
