@@ -17,9 +17,9 @@ r_p                 0.2              AU
 v_min               60.                 km s^-1
 v_max               600.                km s^-1
 Jet_model           #####            #####
-jet_type            simple_stellar_jet  blur
+jet_type            simple_stellar_jet
 incl                78.8                degrees
-alp                 75.9                degrees
+jet_angle           75.9                degrees
 const_optical_depth 1.94
 velocity_centre     1210              km s^-1
 velocity_edge       11                km s^-1
@@ -27,7 +27,7 @@ radius_primary_a1    0.66              a1
 radius_primary_au   0.1386            AU
 T_eff               6250              K
 phi                 0.                degrees
-c_vel                2
+c_vel               2
 c_den               8
 BJD1                1455700.             days
 BJD2                3456200             days
@@ -42,8 +42,8 @@ w_begin_hbeta       4820.
 w_end_hbeta         4865.
 wavelength_bins     801
 velocity_range      2000.
-points_pathlength   1000
-points_primary      100
+points_pathlength   200
+points_primary      5
 sigma_clip          True
 sigma_upper         2.2
 inc_min             25*np.pi/180.

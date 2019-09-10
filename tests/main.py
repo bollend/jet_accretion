@@ -109,7 +109,7 @@ synthetic           = parameters['synthetic']
 ###### Jet model solution parameters ###########################################
 jet_type            = parameters['jet_type']                     # None
 inclination         = eval(parameters['incl']) * degr_to_rad     # radians
-jet_angle           = eval(parameters['alp']) * degr_to_rad      # radians
+jet_angle           = eval(parameters['jet_angle']) * degr_to_rad# radians
 const_optical_depth = eval(parameters['const_optical_depth'])    # None
 velocity_centre     = eval(parameters['velocity_centre'])        # km s^-1
 velocity_edge       = eval(parameters['velocity_edge'])          # km s^-1
@@ -161,10 +161,10 @@ spectra_synth_I           *= 1e-7*1e10*1e4 # W m-2 m-1 sr-1
 
 spectra_background_I = {}   # The background spectra with the correct intensity (W m-2 m-1 sr-1)
 spectra_observed_I   = {}
-print(spectra_observed)
-print(phases)
+
 for ph in phases:
     spectra_background_I[ph] = {}
+    spectra_observed_I[ph]   = {}
     for spec in spectra_observed[ph].keys():
         spectra_background_I[ph][spec] = scale_intensity.scale_intensity(wave_0[line],
                                          spectra_synth_wavelengths,
@@ -200,6 +200,7 @@ for ph in uncertainty_background:
 #         spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
 #         standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
 
+wavelength_bins = len(spectra_wavelengths)
 
 """
 =======================
@@ -241,71 +242,108 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               velocity_centre, velocity_edge,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
-jet._set_gridpoints(primary_orbit[phase_test]['position'], gridpoints_LOS)
-jet._set_gridpoints_unit_vector()
-jet._set_gridpoints_polar_angle()
-
-###### Jet temperature, velocity and density ###################################
-jet_temperature         = 4000      # The jet temperature (K)
-jet_density_max         = 1e18      # The jet number density at its outer edge (m^-3)
-jet_density_scaled      = jet.density(gridpoints_LOS, power_density)   # The scaled number density of the jet
-jet_density             = jet_density_scaled*jet.gridpoints[:,2]*jet_density_max   # The number density of the jet at each gridpoint (m^-3)
-jet_velocity            = jet.poloidal_velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
-jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, secondary_rad_vel) # Radial velocity of each gridpoint (km/s)
-jet_radvel_m_per_s      = jet_radvel_km_per_s * 1000 # Radial velocity of each gridpoint (m/s)
-jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
-jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
+jet_temperature         = 5000      # The jet temperature (K)
+jet_density_max         = 1e15      # The jet number density at its outer edge (m^-3)
 
 """
-Synthetic line profile and EW for a specific object given a temperature and density
+=======================================================================
+Calculate the radiative transfer through the jet for each orbital phase
+=======================================================================
 """
 
-fig, ax = plt.subplots(1, 1, figsize=(12, 8))
-
-jet_n_e    = np.zeros(len(jet_density))     # Jet electron number density (m^-3)
-jet_n_HI   = np.zeros(len(jet_density))     # Jet neutral H number density (m^-3)
-jet_n_HI_1 = np.zeros(len(jet_density))     # Jet neutral H in the groundstate (m^-3)
-jet_n_HI_2 = np.zeros(len(jet_density))     # Jet neutral H in the first excited state (m^-3)
-
-for point, d in enumerate(jet_density):
-    jet_n_e[point]       = ie.n_electron_for_hydrogen(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, jet_density[point])
-    jet_n_HI[point]      = jet_density[point] * ie.saha_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, n_e=jet_n_e[point])
-    jet_n_HI_1[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 1, n=jet_n_e[point]) # HI in energy level n=1
-    jet_n_HI_2[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 2, n=jet_n_e[point]) # HI in energy level n=2
-
-intensity = []
-for wavebin, wave in enumerate(spectra_wavelengths):
-    intensity.append(spectra_background_I[phase_test][spectrum_test][wavebin])
-    # if wave > 6520e-10 and wave < 6600e-10:
-    frequency       = constants.c / wave
-    delta_tau       = jet_delta_gridpoints_m \
-                      * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
-                                jet_n_HI_2[1:], B_lu[0],
-                                jet_radvel_m_per_s[1:], line=line)
-
-    for point in range(gridpoints_LOS-1):
-        intensity[wavebin] = rt_isothermal(wave, jet_temperature, intensity[wavebin], delta_tau[point])
+for phase in phases:
+    for spectrum in spectra_observed[phase].keys():
+        """
+        =============================================================
+        Calculate the radiative transfer through the jet for each LOS
+        =============================================================
+        """
+        print('current phase is ', phase)
+        postAGB.centre = primary_orbit[phase]['position']
+        jet_centre     = secondary_orbit[phase]['position']
+        postAGB._set_grid_location()
 
 
-ax.plot(spectra_wavelengths*1e10, np.array(intensity), label="absorbed spectrum, n=%.1e m^-3"%(jet_density_max))
-ax.fill_between(spectra_wavelengths*1e10, 0, np.array(intensity), alpha=0.1)
-ax.plot(spectra_wavelengths*1e10, spectra_observed_I[phase_test][spectrum_test]*1e-7*1e10*1e4, label="synthetic photospheric line")
-# ax.plot(wave_range, np.array(I_wrong), label="wrong")
-# ax.fill_between(wave_range, 0, I_0, alpha=0.1) #And fill beneath it with a light shade of the same colour
-ax.set_title(r"Absorption of H$\alpha$ lines by jet", size=16)
-# ax.set_xticklabels(ax.get_xticks()*1e9) #Change x-ticks to be in nm
-# ax.set_yticklabels(ax.get_yticks()*1e-9) #Change y-ticks to be in nm^-1
-ax.grid(lw=0.5)
-ax.plot(spectra_wavelengths*1e10, spectra_background_I[phase_test][spectrum_test], label="synthetic, T = 6250K", color = 'green')
-# ax.fill_between(wave_range*1e10, 0, I_0, alpha=0.1, color='green')
-ax.legend()
-ax.set_xlabel(r"Wavelength ($\AA$)")
-ax.set_ylabel("Intensity W m^-2 m^-1 sr^-1")
-# ax.set_xlim([4850,4870])
-ax.set_xlim([6550,6575])
+        fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+        intensity = np.zeros(wavelength_bins)
+        for (pointAGB, coordAGB) in enumerate(postAGB.grid_location):
 
-ax.set_ylim([0, 5.1e13])
-plt.show()
+            ### For each ray of light from a gridpoint on the post-AGB star, we calculate
+            ### the absorption by the jet.
+            jet._set_gridpoints(coordAGB, gridpoints_LOS)
+
+            if jet.gridpoints is None:
+                intensity_point = list(spectra_background_I[phase][spectrum])
+
+            if jet.gridpoints is not None:
+
+                jet._set_gridpoints_unit_vector()
+                jet._set_gridpoints_polar_angle()
+
+                ###### Jet velocity and density ###################################
+                jet_density_scaled      = jet.density(gridpoints_LOS, power_density)   # The scaled number density of the jet
+                jet_density             = jet_density_scaled*jet_density_max   # The number density of the jet at each gridpoint (m^-3)
+                jet_velocity            = jet.poloidal_velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
+                jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, secondary_rad_vel) # Radial velocity of each gridpoint (km/s)
+                jet_radvel_m_per_s      = jet_radvel_km_per_s * 1000 # Radial velocity of each gridpoint (m/s)
+                jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
+                jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
+
+                """
+                Synthetic line profile and EW for a specific object given a temperature and density
+                """
+
+                jet_n_e    = np.zeros(len(jet_density))     # Jet electron number density (m^-3)
+                jet_n_HI   = np.zeros(len(jet_density))     # Jet neutral H number density (m^-3)
+                jet_n_HI_1 = np.zeros(len(jet_density))     # Jet neutral H in the groundstate (m^-3)
+                jet_n_HI_2 = np.zeros(len(jet_density))     # Jet neutral H in the first excited state (m^-3)
+
+                for point, d in enumerate(jet_density):
+                    jet_n_e[point]       = ie.n_electron_for_hydrogen(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, jet_density[point])
+                    jet_n_HI[point]      = jet_density[point] * ie.saha_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, n_e=jet_n_e[point])
+                    jet_n_HI_1[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 1, n=jet_n_e[point]) # HI in energy level n=1
+                    jet_n_HI_2[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 2, n=jet_n_e[point]) # HI in energy level n=2
+
+                plt.plot(jet.gridpoints[:,1], jet_density/np.max(jet_density), label='scaled density')
+                plt.plot(jet.gridpoints[:,1], jet_n_HI_2/np.max(jet_n_HI_2), label='density HI_2')
+                plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s/np.max(jet_radvel_km_per_s), label='radial velocity')
+                plt.plot(jet.gridpoints[:,1], jet.gridpoints[:,2], label='height in jet')
+                plt.legend()
+                plt.show()
+                intensity_point = []
+                for wavebin, wave in enumerate(spectra_wavelengths):
+                    intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
+                    if wave > 6540e-10 and wave < 6580e-10:
+                        frequency       = constants.c / wave
+                        delta_tau       = jet_delta_gridpoints_m \
+                                          * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
+                                                    jet_n_HI_2[1:], B_lu[0],
+                                                    jet_radvel_m_per_s[1:], line=line)
+
+                        for pointLOS in range(gridpoints_LOS-1):
+                            intensity_point[wavebin] = rt_isothermal(wave, jet_temperature, intensity_point[wavebin], delta_tau[pointLOS])
+
+            intensity += gridpoints_primary**-1 * np.array(intensity_point)
+
+
+        ax.plot(spectra_wavelengths*1e10, np.array(intensity), label="absorbed spectrum, n=%.1e m^-3"%(jet_density_max))
+        ax.fill_between(spectra_wavelengths*1e10, 0, np.array(intensity), alpha=0.1)
+        ax.plot(spectra_wavelengths*1e10, spectra_observed_I[phase][spectrum], label="synthetic photospheric line")
+        # ax.plot(wave_range, np.array(I_wrong), label="wrong")
+        # ax.fill_between(wave_range, 0, I_0, alpha=0.1) #And fill beneath it with a light shade of the same colour
+        ax.set_title(r"Absorption of H$\alpha$ lines by jet", size=16)
+        # ax.set_xticklabels(ax.get_xticks()*1e9) #Change x-ticks to be in nm
+        # ax.set_yticklabels(ax.get_yticks()*1e-9) #Change y-ticks to be in nm^-1
+        ax.grid(lw=0.5)
+        ax.plot(spectra_wavelengths*1e10, spectra_background_I[phase][spectrum], label="synthetic, T = 6250K", color = 'green')
+        # ax.fill_between(wave_range*1e10, 0, I_0, alpha=0.1, color='green')
+        ax.legend()
+        ax.set_xlabel(r"Wavelength ($\AA$)")
+        ax.set_ylabel("Intensity W m^-2 m^-1 sr^-1")
+        ax.set_xlim([6550,6575])
+
+        ax.set_ylim([0, 5.1e13])
+        plt.savefig('../docs/output_tests/IRAS19135+3937/IRAS19135+3937_'+str(phase)+'_'+spectrum+'.png')
 
 
 
