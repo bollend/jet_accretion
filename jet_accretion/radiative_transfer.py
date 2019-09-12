@@ -168,6 +168,48 @@ def voigt(u, a):
 
     return result.real
 
+def opacity_sobolev(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
+    """
+    Calculate the absorption coefficient alpha
+
+    Parameters
+    ==========
+    nu : float
+        The wavelength in units of Hz
+    T : float
+        Temperature in units of Kelvin
+    n_HI : float
+        The number density of HI in units of m^-3
+    n_e : float
+        The electron number density in units of m^-3
+    n_l : float
+        The number density of the lower energy level in units of m^-3
+    Blu : float
+        The einstein coefficient for excitation
+    rv : float
+        Radial velocity of the gridpoint in m^1 s^-1
+
+    returns
+    =======
+    abs_coeff_si : float
+        The absorption coefficient in units of m^-1
+    """
+    n_l_cgs = n_l * 1e-6
+    balmer_properties = {'wavelength': {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10, 'hdelta': 4101.73e-10},
+                         'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
+                         'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
+    nu_0              = constants.c / balmer_properties['wavelength'][line]
+    f_line            = balmer_properties['f_osc'][line]
+
+    u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
+    phi_nu = voigt(u, a) / ( np.pi**.5 * delta_nu )
+    C = ( consts.h.cgs.value * Blu / (4. * np.pi) )
+    C_osc = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
+
+    abs_coeff_cgs = C_osc * f_line * phi_nu * n_l_cgs * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_si = abs_coeff_cgs * 1e2
+
+    return abs_coeff_si
 
 def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
     """

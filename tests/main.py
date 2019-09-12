@@ -243,7 +243,7 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
 jet_temperature         = 5000      # The jet temperature (K)
-jet_density_max         = 1e15      # The jet number density at its outer edge (m^-3)
+jet_density_max         = 1e13      # The jet number density at its outer edge (m^-3)
 
 """
 =======================================================================
@@ -288,7 +288,7 @@ for phase in phases:
                 jet_radvel_m_per_s      = jet_radvel_km_per_s * 1000 # Radial velocity of each gridpoint (m/s)
                 jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
                 jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
-
+                jet_radvel_gradient     = jet.radial_velocity_gradient(jet_radvel_m_per_s, jet_delta_gridpoints_m) # Radial velocity gradient of each gridpoint (s^-1)
                 """
                 Synthetic line profile and EW for a specific object given a temperature and density
                 """
@@ -308,22 +308,30 @@ for phase in phases:
                 plt.plot(jet.gridpoints[:,1], jet_n_HI_2/np.max(jet_n_HI_2), label='density HI_2')
                 plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s/np.max(jet_radvel_km_per_s), label='radial velocity')
                 plt.plot(jet.gridpoints[:,1], jet.gridpoints[:,2], label='height in jet')
+                plt.plot(jet.gridpoints[:,1], jet_radvel_gradient/np.max(jet_radvel_gradient), label='gradient radial velocity')
                 plt.legend()
                 plt.show()
                 intensity_point = []
                 for wavebin, wave in enumerate(spectra_wavelengths):
-                    intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
+                    # intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
+                    intensity_point.append(0)
                     if wave > 6540e-10 and wave < 6580e-10:
                         frequency       = constants.c / wave
                         delta_tau       = jet_delta_gridpoints_m \
                                           * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
                                                     jet_n_HI_2[1:], B_lu[0],
                                                     jet_radvel_m_per_s[1:], line=line)
+                        # delta_tau       = jet_delta_gridpoints_m \
+                        #                   * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
+                        #                             jet_n_HI_2[1:], B_lu[0],
+                        #                             jet_radvel_m_per_s[1:], line=line)
 
                         for pointLOS in range(gridpoints_LOS-1):
                             intensity_point[wavebin] = rt_isothermal(wave, jet_temperature, intensity_point[wavebin], delta_tau[pointLOS])
 
             intensity += gridpoints_primary**-1 * np.array(intensity_point)
+            plt.plot(spectra_wavelengths, intensity_point)
+            plt.show()
 
 
         ax.plot(spectra_wavelengths*1e10, np.array(intensity), label="absorbed spectrum, n=%.1e m^-3"%(jet_density_max))
