@@ -168,7 +168,7 @@ def voigt(u, a):
 
     return result.real
 
-def opacity_sobolev(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
+def opacity_sobolev(nu, T, n_l, rv, velocity_gradient, delta_lambda, points, line='halpha'):
     """
     Calculate the absorption coefficient alpha
 
@@ -198,17 +198,17 @@ def opacity_sobolev(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
     balmer_properties = {'wavelength': {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10, 'hdelta': 4101.73e-10},
                          'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
                          'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
-    nu_0              = constants.c / balmer_properties['wavelength'][line]
-    f_line            = balmer_properties['f_osc'][line]
-
-    u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
-    phi_nu = voigt(u, a) / ( np.pi**.5 * delta_nu )
-    C = ( consts.h.cgs.value * Blu / (4. * np.pi) )
-    C_osc = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
-
-    abs_coeff_cgs = C_osc * f_line * phi_nu * n_l_cgs * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
-    abs_coeff_si = abs_coeff_cgs * 1e2
-
+    nu_0                   = constants.c / balmer_properties['wavelength'][line]
+    wave_0                 = balmer_properties['wavelength'][line]
+    nu_0_rv                = nu_0 * (1. - rv / constants.c)
+    delta_nu               = ( 2 * constants.k * T / constants.m_p)**.5 * nu_0_rv/constants.c
+    diff_nu                = np.abs(nu_0_rv - nu)
+    f_line                 = balmer_properties['f_osc'][line]
+    C_osc                  = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
+    abs_coeff_cgs          = np.zeros(points-1)
+    indices                = np.where(diff_nu < delta_nu)
+    abs_coeff_cgs[indices] = C_osc * f_line * c / nu * n_l_cgs[indices] * (2. * delta_nu)**-1 * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_si           = abs_coeff_cgs * 1e2
     return abs_coeff_si
 
 def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
@@ -245,15 +245,15 @@ def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
     f_line            = balmer_properties['f_osc'][line]
 
     u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
-    phi_nu = voigt(u, a) / ( np.pi**.5 * delta_nu )
-    C = ( consts.h.cgs.value * Blu / (4. * np.pi) )
-    C_osc = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
+    phi_nu         = voigt(u, a) / ( np.pi**.5 * delta_nu )
+    C              = ( consts.h.cgs.value * Blu / (4. * np.pi) )
+    C_osc          = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
 
     # return C * nu_0 * phi_nu * n_l * ( 1 - np.exp(-constants.h * nu / (constants.k * T )))
     # return C_osc * f_line * phi_nu * n_l * ( 1 - np.exp(-constants.h * nu / (constants.k * T )))
     # return (6.626e-27 * Blu /4./np.pi) * nu_0 * phi_nu * n_l * ( 1 - np.exp(-constants.h * nu / (constants.k * T )))
     abs_coeff_cgs = C_osc * f_line * phi_nu * n_l_cgs * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
-    abs_coeff_si = abs_coeff_cgs * 1e2
+    abs_coeff_si  = abs_coeff_cgs * 1e2
 
     return abs_coeff_si
 
