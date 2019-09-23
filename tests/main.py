@@ -245,7 +245,7 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
 jet_temperature         = 5000      # The jet temperature (K)
-jet_density_max         = 1e15      # The jet number density at its outer edge (m^-3)
+jet_density_max         = 9.99e15      # The jet number density at its outer edge (m^-3)
 
 """
 =======================================================================
@@ -262,7 +262,7 @@ for phase in phases:
         """
         print('current phase is ', phase)
         postAGB.centre = primary_orbit[phase]['position']
-        jet_centre     = secondary_orbit[phase]['position']
+        jet.jet_centre = secondary_orbit[phase]['position']
         postAGB._set_grid_location()
 
 
@@ -275,7 +275,8 @@ for phase in phases:
             jet._set_gridpoints(coordAGB, gridpoints_LOS)
 
             if jet.gridpoints is None:
-                intensity_point = list(0*spectra_background_I[phase][spectrum])
+                intensity_point = list(0.*spectra_background_I[phase][spectrum])
+                # intensity_point = list(spectra_background_I[phase][spectrum])
 
             if jet.gridpoints is not None:
 
@@ -306,10 +307,7 @@ for phase in phases:
                     jet_n_HI_1[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 1, n=jet_n_e[point]) # HI in energy level n=1
                     jet_n_HI_2[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 2, n=jet_n_e[point]) # HI in energy level n=2
 
-                plt.scatter(postAGB.grid_location[:,1], postAGB.grid_location[:,2])
-                plt.scatter(jet.gridpoints[:,1], jet.gridpoints[:,2])
-                plt.show()
-                # plt.plot(jet.gridpoints[:,1], jet_density/np.max(jet_densit]y), label='scaled density')
+                # plt.plot(jet.gridpoints[:,1], jet_density/np.max(jet_density), label='scaled density')
                 # plt.plot(jet.gridpoints[:,1], jet_n_HI_2/np.max(jet_n_HI_2), label='density HI_2')
                 # plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s/np.max(jet_radvel_km_per_s), label='radial velocity')
                 # plt.plot(jet.gridpoints[:,1], jet.gridpoints[:,2], label='height in jet')
@@ -322,18 +320,18 @@ for phase in phases:
                     intensity_point.append(0)
                     if wave > 6540e-10 and wave < 6580e-10:
                         frequency       = constants.c / wave
-                        delta_tau       = jet_delta_gridpoints_m \
-                                          * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
-                                                    jet_n_HI_2[1:], B_lu[0],
-                                                    jet_radvel_m_per_s[1:], line=line)
                         # delta_tau       = jet_delta_gridpoints_m \
-                        #                   * opacity_sobolev(frequency, jet_temperature,
-                        #                             jet_n_HI_2[1:],
-                        #                             jet_radvel_m_per_s[1:],
-                        #                             jet_radvel_gradient[1:],
-                        #                             wavelength_bin_size,
-                        #                             gridpoints_LOS,
-                        #                             line=line)
+                        #                   * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
+                        #                             jet_n_HI_2[1:], B_lu[0],
+                        #                             jet_radvel_m_per_s[1:], line=line)
+                        delta_tau       = jet_delta_gridpoints_m \
+                                          * opacity_sobolev(frequency, jet_temperature,
+                                                    jet_n_HI_2[1:],
+                                                    jet_radvel_m_per_s[1:],
+                                                    jet_radvel_gradient[1:],
+                                                    wavelength_bin_size,
+                                                    gridpoints_LOS,
+                                                    line=line)
 
                         for pointLOS in range(gridpoints_LOS-1):
                             intensity_point[wavebin] = rt_isothermal(wave, jet_temperature, intensity_point[wavebin], delta_tau[pointLOS])
