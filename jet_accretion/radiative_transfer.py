@@ -178,16 +178,16 @@ def opacity_sobolev(nu, T, n_l, rv, velocity_gradient, delta_lambda, points, lin
         The wavelength in units of Hz
     T : float
         Temperature in units of Kelvin
-    n_HI : float
-        The number density of HI in units of m^-3
-    n_e : float
-        The electron number density in units of m^-3
     n_l : float
         The number density of the lower energy level in units of m^-3
-    Blu : float
-        The einstein coefficient for excitation
     rv : float
         Radial velocity of the gridpoint in m^1 s^-1
+    velocity_gradient : float
+        The velocity gradient of the gridpoint in s^-1
+    delta_lambda : float
+        The wavelength bin size
+    points : integer
+        The number of gridpoints along the path of the ray through the jet
 
     returns
     =======
@@ -207,7 +207,7 @@ def opacity_sobolev(nu, T, n_l, rv, velocity_gradient, delta_lambda, points, lin
     C_osc                  = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
     abs_coeff_cgs          = np.zeros(points-1)
     indices                = np.where(diff_nu < delta_nu)
-    abs_coeff_cgs[indices] = C_osc * f_line * c / nu * n_l_cgs[indices] * (2. * delta_nu)**-1 * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_cgs[indices] = C_osc * f_line * c / nu * n_l_cgs[indices] * (2. * delta_nu[indices])**-1 * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
     abs_coeff_si           = abs_coeff_cgs * 1e2
     return abs_coeff_si
 

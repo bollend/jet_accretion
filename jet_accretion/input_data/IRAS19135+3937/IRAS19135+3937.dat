@@ -19,11 +19,11 @@ v_max               600.                km s^-1
 Jet_model           #####            #####
 jet_type            simple_stellar_jet
 incl                78.8                degrees
-jet_angle           45.9                degrees
+jet_angle           75.9                degrees
 const_optical_depth 1.94
 velocity_centre     1210              km s^-1
 velocity_edge       11                km s^-1
-radius_primary_a1    0.66              a1
+radius_primary_a1   0.66              a1
 radius_primary_au   0.1386            AU
 T_eff               6250              K
 phi                 0.                degrees
@@ -42,7 +42,7 @@ w_begin_hbeta       4820.
 w_end_hbeta         4865.
 wavelength_bins     801
 velocity_range      2000.
-points_pathlength   100
+points_pathlength   500
 points_primary      10
 sigma_clip          True
 sigma_upper         2.2

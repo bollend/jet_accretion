@@ -245,7 +245,7 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
 jet_temperature         = 5000      # The jet temperature (K)
-jet_density_max         = 9.99e15      # The jet number density at its outer edge (m^-3)
+jet_density_max         = 1.e15      # The jet number density at its outer edge (m^-3)
 
 """
 =======================================================================
@@ -275,8 +275,8 @@ for phase in phases:
             jet._set_gridpoints(coordAGB, gridpoints_LOS)
 
             if jet.gridpoints is None:
-                intensity_point = list(0.*spectra_background_I[phase][spectrum])
-                # intensity_point = list(spectra_background_I[phase][spectrum])
+                # intensity_point = list(0.*spectra_background_I[phase][spectrum])
+                intensity_point = list(spectra_background_I[phase][spectrum])
 
             if jet.gridpoints is not None:
 
@@ -316,8 +316,8 @@ for phase in phases:
                 # plt.show()
                 intensity_point = []
                 for wavebin, wave in enumerate(spectra_wavelengths):
-                    # intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
-                    intensity_point.append(0)
+                    intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
+                    # intensity_point.append(0)
                     if wave > 6540e-10 and wave < 6580e-10:
                         frequency       = constants.c / wave
                         # delta_tau       = jet_delta_gridpoints_m \
