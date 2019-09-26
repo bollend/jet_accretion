@@ -149,7 +149,7 @@ def u_a(nu, nu_0, n_HI, n_e, Temp, rv, line='halpha'):
         C_stark    = 1.47 * 1e-2 * 1e-20
         delta_nu   = ( 2 * constants.k * Temp / constants.m_p)**.5 * nu_0_rv/constants.c
         gamma_damp = C_rad + C_vdw * ( n_HI / 10**22 ) * ( Temp / 5000 )**0.3 + C_stark * ( n_e / 10**18 )**(2./3.)
-        a          =1. / ( 4. * np.pi )
+        a          = 1. / ( 4. * np.pi )
         u          = ( nu - nu_0_rv ) / delta_nu
 
     return u, a, delta_nu
@@ -199,7 +199,6 @@ def opacity_sobolev(nu, T, n_l, rv, velocity_gradient, delta_lambda, points, lin
                          'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
                          'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
     nu_0                   = constants.c / balmer_properties['wavelength'][line]
-    wave_0                 = balmer_properties['wavelength'][line]
     nu_0_rv                = nu_0 * (1. - rv / constants.c)
     delta_nu               = ( 2 * constants.k * T / constants.m_p)**.5 * nu_0_rv/constants.c
     diff_nu                = np.abs(nu_0_rv - nu)
@@ -207,8 +206,101 @@ def opacity_sobolev(nu, T, n_l, rv, velocity_gradient, delta_lambda, points, lin
     C_osc                  = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
     abs_coeff_cgs          = np.zeros(points-1)
     indices                = np.where(diff_nu < delta_nu)
-    abs_coeff_cgs[indices] = C_osc * f_line * c / nu * n_l_cgs[indices] * (2. * delta_nu[indices])**-1 * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    # abs_coeff_cgs[indices] = C_osc * f_line * constants.c / nu * n_l_cgs[indices] * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_cgs[indices] = C_osc * f_line * constants.c / nu * n_l_cgs[indices] * (2. * delta_nu[indices])**-1 * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
     abs_coeff_si           = abs_coeff_cgs * 1e2
+    return abs_coeff_si
+
+def opacity_rectangular(nu, T, n_l, lambda_binsize, Blu, rv, velocity_gradient,points, line='halpha'):
+    """
+    Calculate the absorption coefficient alpha where the absorption profile
+    is rectangular.
+
+    Parameters
+    ==========
+    nu : float
+        The wavelength in units of Hz
+    T : float
+        Temperature in units of Kelvin
+    n_l : float
+        The number density of the lower energy level in units of m^-3
+    lambda_binsize : float
+        The wavelength bin size
+    Blu : float
+        The einstein coefficient for excitation
+    rv : float
+        Radial velocity of the gridpoint in m^1 s^-1
+
+    returns
+    =======
+    abs_coeff_si : float
+        The absorption coefficient in units of m^-1
+    """
+    n_l_cgs = n_l * 1e-6
+    balmer_properties = {'wavelength': {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10, 'hdelta': 4101.73e-10},
+                         'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
+                         'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
+    nu_0                   = constants.c / balmer_properties['wavelength'][line]
+    nu_0_rv                = nu_0 * (1. - rv / constants.c)
+    diff_nu                = np.abs(nu_0_rv - nu)
+    delta_nu               = ( 2 * constants.k * T / constants.m_p)**.5 * nu_0_rv/constants.c
+    nu_binsize             = lambda_binsize * balmer_properties['wavelength'][line]**-2 * constants.c
+    phi_nu                 = 1. / (2. * delta_nu)
+    f_line                 = balmer_properties['f_osc'][line]
+    C_osc                  = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
+    abs_coeff_cgs          = np.zeros(points-1)
+    indices                = np.where(diff_nu < delta_nu)
+    abs_coeff_cgs[indices] = C_osc * f_line * phi_nu[indices] * c / nu * n_l_cgs[indices] * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_si           = abs_coeff_cgs * 1e2
+    return abs_coeff_si
+
+def opacity_both(nu, T, n_HI, n_e, n_l, lambda_binsize, Blu, rv, velocity_gradient, points, line='halpha'):
+    """
+    Calculate the absorption coefficient alpha
+
+    Parameters
+    ==========
+    nu : float
+        The wavelength in units of Hz
+    T : float
+        Temperature in units of Kelvin
+    n_HI : float
+        The number density of HI in units of m^-3
+    n_e : float
+        The electron number density in units of m^-3
+    n_l : float
+        The number density of the lower energy level in units of m^-3
+    Blu : float
+        The einstein coefficient for excitation
+    rv : float
+        Radial velocity of the gridpoint in m^1 s^-1
+
+    returns
+    =======
+    abs_coeff_si : float
+        The absorption coefficient in units of m^-1
+    """
+    n_l_cgs = n_l * 1e-6
+    balmer_properties = {'wavelength': {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10, 'hdelta': 4101.73e-10},
+                         'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
+                         'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
+    nu_0           = constants.c / balmer_properties['wavelength'][line]
+    f_line         = balmer_properties['f_osc'][line]
+    nu_0_rv                = nu_0 * (1. - rv / constants.c)
+    diff_nu                = np.abs(nu_0_rv - nu)
+    delta_nu               = ( 2 * constants.k * T / constants.m_p)**.5 * nu_0_rv/constants.c
+
+    u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
+    phi_nu         = voigt(u, a) / ( np.pi**.5 * delta_nu )
+    C_osc          = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
+    indices_sob = np.where( 10*lambda_binsize  > (( 2 * constants.k * T / constants.m_p)**.5 / velocity_gradient) )
+    indices_classic = np.where( 10*lambda_binsize < (( 2 * constants.k * T / constants.m_p)**.5 / velocity_gradient) )
+    abs_coeff_cgs = np.zeros(points-1)
+    abs_coeff_cgs[indices_classic]  = C_osc * f_line * phi_nu[indices_classic] * n_l_cgs[indices_classic] * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    # abs_coeff_cgs[indices_sob]  = constants.c / nu * velocity_gradient[indices_sob]**-1 * C_osc * f_line * phi_nu[indices_sob] * n_l_cgs[indices_sob] * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_cgs[indices_sob] = C_osc * f_line * phi_nu[indices_sob] * constants.c / nu * n_l_cgs[indices_sob] * (2. * delta_nu[indices_sob])**-1 * velocity_gradient[indices_sob]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_si   = abs_coeff_cgs * 1e2
+
     return abs_coeff_si
 
 def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
@@ -241,22 +333,16 @@ def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
     balmer_properties = {'wavelength': {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10, 'hdelta': 4101.73e-10},
                          'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
                          'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
-    nu_0              = constants.c / balmer_properties['wavelength'][line]
-    f_line            = balmer_properties['f_osc'][line]
+    nu_0           = constants.c / balmer_properties['wavelength'][line]
+    f_line         = balmer_properties['f_osc'][line]
 
     u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
     phi_nu         = voigt(u, a) / ( np.pi**.5 * delta_nu )
-    C              = ( consts.h.cgs.value * Blu / (4. * np.pi) )
     C_osc          = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
-
-    # return C * nu_0 * phi_nu * n_l * ( 1 - np.exp(-constants.h * nu / (constants.k * T )))
-    # return C_osc * f_line * phi_nu * n_l * ( 1 - np.exp(-constants.h * nu / (constants.k * T )))
-    # return (6.626e-27 * Blu /4./np.pi) * nu_0 * phi_nu * n_l * ( 1 - np.exp(-constants.h * nu / (constants.k * T )))
-    abs_coeff_cgs = C_osc * f_line * phi_nu * n_l_cgs * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
-    abs_coeff_si  = abs_coeff_cgs * 1e2
+    abs_coeff_cgs  = C_osc * f_line * phi_nu * n_l_cgs * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_si   = abs_coeff_cgs * 1e2
 
     return abs_coeff_si
-
 
 
 if __name__=='__main__':
