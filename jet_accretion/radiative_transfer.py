@@ -144,12 +144,12 @@ def u_a(nu, nu_0, n_HI, n_e, Temp, rv, line='halpha'):
     if line=='hbeta':
         nu_0       = constants.c / ( 4861.3 * 1e-10 )
         nu_0_rv    = nu_0 * (1. - rv / constants.c)
-        C_rad      = 1e6 * 1e-10
-        C_vdw      = 5.5 * 1e-3 * 1e-20
-        C_stark    = 1.47 * 1e-2 * 1e-20
+        # C_rad      = 1e6 * 1e-10
+        # C_vdw      = 5.5 * 1e-3 * 1e-20
+        # C_stark    = 1.47 * 1e-2 * 1e-20
         delta_nu   = ( 2 * constants.k * Temp / constants.m_p)**.5 * nu_0_rv/constants.c
-        gamma_damp = C_rad + C_vdw * ( n_HI / 10**22 ) * ( Temp / 5000 )**0.3 + C_stark * ( n_e / 10**18 )**(2./3.)
-        a          = 1. / ( 4. * np.pi )
+        # gamma_damp = C_rad + C_vdw * ( n_HI / 10**22 ) * ( Temp / 5000 )**0.3 + C_stark * ( n_e / 10**18 )**(2./3.)
+        a          = 0.# delta_nu / ( 4. * np.pi * delta_nu )
         u          = ( nu - nu_0_rv ) / delta_nu
 
     return u, a, delta_nu
