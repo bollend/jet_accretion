@@ -254,7 +254,7 @@ def opacity_rectangular(nu, T, n_l, lambda_binsize, Blu, rv, velocity_gradient,p
     abs_coeff_si           = abs_coeff_cgs * 1e2
     return abs_coeff_si
 
-def opacity_both(nu, T, n_HI, n_e, n_l, lambda_binsize, Blu, rv, velocity_gradient, points, line='halpha'):
+def opacity_both(nu, T, n_HI, n_e, n_l, delta_gridpoints, Blu, rv, velocity_gradient, points, line='halpha'):
     """
     Calculate the absorption coefficient alpha
 
@@ -289,18 +289,19 @@ def opacity_both(nu, T, n_HI, n_e, n_l, lambda_binsize, Blu, rv, velocity_gradie
     nu_0_rv                = nu_0 * (1. - rv / constants.c)
     diff_nu                = np.abs(nu_0_rv - nu)
     delta_nu               = ( 2 * constants.k * T / constants.m_p)**.5 * nu_0_rv/constants.c
-
+    indices                = np.where(diff_nu < delta_nu)
     u, a, delta_nu = u_a(nu, nu_0, n_HI, n_e, T, rv, line=line)
     phi_nu         = voigt(u, a) / ( np.pi**.5 * delta_nu )
     C_osc          = ( np.pi * consts.e.esu.value**2 / (consts.m_e.cgs.value * consts.c.cgs.value ) )
-    indices_sob = np.where( 10*lambda_binsize  > (( 2 * constants.k * T / constants.m_p)**.5 / velocity_gradient) )
-    indices_classic = np.where( 10*lambda_binsize < (( 2 * constants.k * T / constants.m_p)**.5 / velocity_gradient) )
+    indices_sob = np.where( 10000*delta_gridpoints  > (( 2 * constants.k * T / constants.m_p)**.5 / velocity_gradient) )
+    indices_classic = np.where( 10000*delta_gridpoints < (( 2 * constants.k * T / constants.m_p)**.5 / velocity_gradient) )
+    indices_sob_inters = np.intersect1d(indices, indices_sob)
     abs_coeff_cgs = np.zeros(points-1)
     abs_coeff_cgs[indices_classic]  = C_osc * f_line * phi_nu[indices_classic] * n_l_cgs[indices_classic] * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
     # abs_coeff_cgs[indices_sob]  = constants.c / nu * velocity_gradient[indices_sob]**-1 * C_osc * f_line * phi_nu[indices_sob] * n_l_cgs[indices_sob] * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
-    abs_coeff_cgs[indices_sob] = C_osc * f_line * phi_nu[indices_sob] * constants.c / nu * n_l_cgs[indices_sob] * (2. * delta_nu[indices_sob])**-1 * velocity_gradient[indices_sob]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    abs_coeff_cgs[indices_sob] = C_osc * f_line * constants.c / nu * n_l_cgs[indices_sob_inters] * (2. * delta_nu[indices_sob_inters])**-1 * velocity_gradient[indices_sob_inters]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
+    # abs_coeff_cgs[indices] = C_osc * f_line * constants.c / nu * n_l_cgs[indices]     * (2. * delta_nu[indices])**-1     * velocity_gradient[indices]**-1 * ( 1 - np.exp(-constants.h * nu_0 / (constants.k * T )))
     abs_coeff_si   = abs_coeff_cgs * 1e2
-
     return abs_coeff_si
 
 def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
