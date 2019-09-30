@@ -60,7 +60,7 @@ velocity_centre           = eval(parameters['velocity_centre'])         # km/s
 velocity_edge             = eval(parameters['velocity_edge'])           # km/s
 jet_velocity_max          = 1000 * velocity_centre                      # m/s
 jet_velocity_min          = 1000 * velocity_edge                        # m/s
-jet_density_max           = 1e14                                        # m^-3
+jet_density_max           = 1e15                                        # m^-3
 jet_density_max_kg_per_m3 = jet_density_max                             # kg/m^3
 
 
@@ -84,5 +84,5 @@ jet_mass_loss_particle_per_s = 2. * np.pi * jet_density_max_kg_per_m3\
 jet_mass_loss_kg_per_s = m_p * jet_mass_loss_particle_per_s
 jet_mass_loss_Msol_per_yr =  M_sol**-1 * year * jet_mass_loss_kg_per_s
 
-print(jet_mass_loss_kg_per_s)
-print(jet_mass_loss_Msol_per_yr)
+print('The jet mass-loss rate for a density of %.2e m^-3 is: %.3e kg/s' % (jet_density_max, jet_mass_loss_kg_per_s))
+print('The jet mass-loss rate for a density of %.2e m^-3 is: %.3e Msol/year' % (jet_density_max,jet_mass_loss_Msol_per_yr))

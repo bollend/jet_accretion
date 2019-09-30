@@ -60,6 +60,9 @@ degeneracy_H        = {1: np.array([2, 8, 18, 32]), 2: np.array([1])} # Degenera
 ###### Balmer properties, i.e., einstein coefficients for Halpha, Hbeta, #######
 ###### Hgamma, and Hdelta ######################################################
 
+balmer_properties = {'wavelength': {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10, 'hdelta': 4101.73e-10},
+                     'f_osc': {'halpha': 6.407e-1, 'hbeta': 1.1938e-1, 'hgamma': 4.4694e-2, 'hdelta': 2.2105e-2},
+                     'Aul' : {'halpha': 4.4101e7, 'hbeta': 8.4193e6, 'hgamma' : 2.530e6, 'hdelta': 9.732e5}}
 wave_0 = {'halpha': 6562.8e-10, 'hbeta': 4861.35e-10, 'hgamma': 4340.47e-10,\
          'hdelta': 4101.73e-10}
 # B_lu = np.array([4.568e14, 6.167e14, 6.907e14, 7.309e14])
@@ -245,7 +248,12 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
 jet_temperature         = 5000      # The jet temperature (K)
-jet_density_max         = 1.e14      # The jet number density at its outer edge (m^-3)
+jet_density_max         = 1.e15      # The jet number density at its outer edge (m^-3)
+
+jet_thermal_velocity    = ( 2 * constants.k * jet_temperature / constants.m_p)**.5 # The jet thermal velocity (m/s)
+jet_frequency_0         = constants.c / balmer_properties['wavelength'][line]
+spectra_frequencies = constants.c / spectra_wavelengths
+
 
 """
 =======================================================================
@@ -261,10 +269,9 @@ for phase in phases:
         =============================================================
         """
         print('current phase is ', phase)
-        postAGB.centre = primary_orbit[phase]['position']
-        jet.jet_centre = secondary_orbit[phase]['position']
+        postAGB.centre      = primary_orbit[phase]['position']
+        jet.jet_centre      = secondary_orbit[phase]['position']
         postAGB._set_grid_location()
-
 
         fig, ax = plt.subplots(1, 1, figsize=(12, 8))
         intensity = np.zeros(wavelength_bins)
@@ -292,6 +299,9 @@ for phase in phases:
                 jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
                 jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
                 jet_radvel_gradient     = jet.radial_velocity_gradient(jet_radvel_m_per_s, jet_delta_gridpoints_m) # Radial velocity gradient of each gridpoint (s^-1)
+                jet_frequency_0_rv      = jet_frequency_0 * (1. - jet_radvel_m_per_s / constants.c) # The shifted central frequency of the line
+                jet_delta_nu_thermal    = jet_thermal_velocity * jet_frequency_0_rv / constants.c # The frequency width due to the thermal velocity
+
                 """
                 Synthetic line profile and EW for a specific object given a temperature and density
                 """
@@ -319,46 +329,65 @@ for phase in phases:
                 # plt.plot(jet.gridpoints[:,1], jet_radvel_gradient)
                 # plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s)
                 # plt.show()
-                intensity_point = []
-                for wavebin, wave in enumerate(spectra_wavelengths):
-                    # intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
-                    intensity_point.append(0)
-                    if wave > 6540e-10 and wave < 6580e-10:
-                        frequency       = constants.c / wave
-                        delta_tau       = jet_delta_gridpoints_m \
-                                          * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
-                                                    jet_n_HI_2[1:], B_lu[0],
-                                                    jet_radvel_m_per_s[1:], line=line)
-                        # delta_tau       = jet_delta_gridpoints_m \
-                        #                   * opacity_rectangular(frequency, jet_temperature,
-                        #                             jet_n_HI_2[1:], wavelength_bin_size, B_lu[0],
-                        #                             jet_radvel_m_per_s[1:],
-                        #                             jet_radvel_gradient[1:],
-                        #                             gridpoints_LOS,
-                        #                             line=line)
-                        # delta_tau       = jet_delta_gridpoints_m \
-                        #                   * opacity_sobolev(frequency, jet_temperature,
-                        #                             jet_n_HI_2[1:],
-                        #                             jet_radvel_m_per_s[1:],
-                        #                             jet_radvel_gradient[1:],
-                        #                             wavelength_bin_size,
-                        #                             gridpoints_LOS,
-                        #                             line=line)
-                        # delta_tau       = jet_delta_gridpoints_m \
-                        #                   * opacity_both(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
-                        #                             jet_n_HI_2[1:],
-                        #                             wavelength_bin_size,
-                        #                             B_lu[0],
-                        #                             jet_radvel_m_per_s[1:],
-                        #                             jet_radvel_gradient[1:],
-                        #                             gridpoints_LOS,
-                        #                             line=line)
-                        for pointLOS in range(gridpoints_LOS-1):
-                            intensity_point[wavebin] = rt_isothermal(wave, jet_temperature, intensity_point[wavebin], delta_tau[pointLOS])
 
-            intensity += gridpoints_primary**-1 * np.array(intensity_point)
-            # plt.plot(spectra_wavelengths, intensity_point)
-            # plt.show()
+                intensity_point = 0.*np.copy(spectra_background_I[phase][spectrum])
+                # intensity_point = np.copy(spectra_background_I[phase][spectrum])
+
+                for pointLOS in range(gridpoints_LOS-1):
+                    # We first select the frequencies for which the current point in the jet
+                    # will cause absorption
+                    diff_nu = np.abs(jet_frequency_0_rv[pointLOS+1] - spectra_frequencies)
+                    indices_frequencies = np.where(diff_nu < 2. * jet_delta_nu_thermal[pointLOS+1])
+
+                    for index in indices_frequencies:
+                        delta_tau = jet_delta_gridpoints_m \
+                                          * opacity(spectra_frequencies[index],
+                                                    jet_temperature, jet_n_HI[pointLOS+1], jet_n_e[pointLOS+1],
+                                                    jet_n_HI_2[pointLOS+1], B_lu[0],
+                                                    jet_radvel_m_per_s[pointLOS+1], line=line)
+                        intensity_point[index] = rt_isothermal(spectra_wavelengths[index], jet_temperature, intensity_point[index], delta_tau)
+
+
+            #     intensity_point = []
+            #     for wavebin, wave in enumerate(spectra_wavelengths):
+            #         # intensity_point.append(spectra_background_I[phase][spectrum][wavebin])
+            #         intensity_point.append(0)
+            #         if wave > 6540e-10 and wave < 6580e-10:
+            #             frequency       = constants.c / wave
+            #             delta_tau       = jet_delta_gridpoints_m \
+            #                               * opacity(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
+            #                                         jet_n_HI_2[1:], B_lu[0],
+            #                                         jet_radvel_m_per_s[1:], line=line)
+            #             # delta_tau       = jet_delta_gridpoints_m \
+            #             #                   * opacity_rectangular(frequency, jet_temperature,
+            #             #                             jet_n_HI_2[1:], wavelength_bin_size, B_lu[0],
+            #             #                             jet_radvel_m_per_s[1:],
+            #             #                             jet_radvel_gradient[1:],
+            #             #                             gridpoints_LOS,
+            #             #                             line=line)
+            #             # delta_tau       = jet_delta_gridpoints_m \
+            #             #                   * opacity_sobolev(frequency, jet_temperature,
+            #             #                             jet_n_HI_2[1:],
+            #             #                             jet_radvel_m_per_s[1:],
+            #             #                             jet_radvel_gradient[1:],
+            #             #                             wavelength_bin_size,
+            #             #                             gridpoints_LOS,
+            #             #                             line=line)
+            #             # delta_tau       = jet_delta_gridpoints_m \
+            #             #                   * opacity_both(frequency, jet_temperature, jet_n_HI[1:], jet_n_e[1:],
+            #             #                             jet_n_HI_2[1:],
+            #             #                             jet_delta_gridpoints_m,
+            #             #                             B_lu[0],
+            #             #                             jet_radvel_m_per_s[1:],
+            #             #                             jet_radvel_gradient[1:],
+            #             #                             gridpoints_LOS,
+            #             #                             line=line)
+            #             for pointLOS in range(gridpoints_LOS-1):
+            #                 intensity_point[wavebin] = rt_isothermal(wave, jet_temperature, intensity_point[wavebin], delta_tau[pointLOS])
+            #
+            # intensity += gridpoints_primary**-1 * np.array(intensity_point)
+            # # plt.plot(spectra_wavelengths, intensity_point)
+            # # plt.show()
 
 
         ax.plot(spectra_wavelengths*1e10, np.array(intensity), label="absorbed spectrum, n=%.1e m^-3"%(jet_density_max))
