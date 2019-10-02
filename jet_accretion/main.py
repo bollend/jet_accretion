@@ -178,6 +178,7 @@ for line in balmer_lines:
         spectra_background_I[line][ph] = {}
         spectra_observed_I[line][ph]   = {}
         for spec in spectra_observed[line][ph].keys():
+            print(len(spectra_synth_wavelengths), len(spectra_synth_I), len(spectra_background[line][ph][spec]), len(spectra_wavelengths[line]))
             spectra_background_I[line][ph][spec] = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
                                              spectra_synth_wavelengths,
                                              spectra_synth_I, spectra_wavelengths[line],
@@ -186,11 +187,7 @@ for line in balmer_lines:
                                              spectra_synth_wavelengths,
                                              spectra_synth_I, spectra_wavelengths[line],
                                              spectra_observed[line][ph][spec])
-            plt.plot(spectra_wavelengths[line], spectra_background_I[line][ph][spec])
-            plt.plot(spectra_wavelengths[line], spectra_observed_I[line][ph][spec])
-            plt.plot(spectra_synth_wavelengths, spectra_synth_I)
-            plt.xlim(np.min(spectra_wavelengths[line]), np.max(spectra_wavelengths[line]))
-            plt.show()
+
 ###### uncertainty on the data #################################################
 
 standard_deviation = {}
