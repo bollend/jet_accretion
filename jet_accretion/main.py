@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/lhome/dylanb/astronomy/MCMC_main/MCMC_main')
 sys.path.append('/lhome/dylanb/astronomy/jet_accretion/jet_accretion')
+import os
 import argparse
 import numpy as np
 import matplotlib.pylab as plt
@@ -129,7 +130,13 @@ secondary_sma_AU    = primary_sma_AU * mass_ratio         # SMA of the secondary
 secondary_rad_vel   = primary_rad_vel * mass_ratio        # Radial velocity secondary (km/s)
 secondary_max_vel   = primary_max_vel * mass_ratio        # Orbital velocity secondary (km/s)
 T_inf               = geometry_binary.T0_to_IC(omega, ecc, period, T0)
-
+###### Temperature and density grid ############################################
+T_min               = eval(parameters['T_min'])                 # Min temperature (K)
+T_max               = eval(parameters['T_max'])                 # Max temperature (K)
+T_step              = eval(parameters['T_step'])                # step temperature (K)
+density_log10_min   = eval(parameters['rho_min'])               # Minimum density (log10 m^-3)
+density_log10_max   = eval(parameters['rho_max'])               # Maximum density (log10 m^-3)
+density_log10_step  = eval(parameters['rho_step'])              # Step density (log10 m^-3)
 
 """
 ===============
@@ -177,8 +184,7 @@ for line in balmer_lines:
     for ph in phases:
         spectra_background_I[line][ph] = {}
         spectra_observed_I[line][ph]   = {}
-        for spec in spectra_observed[line][ph].keys():
-            print(len(spectra_synth_wavelengths), len(spectra_synth_I), len(spectra_background[line][ph][spec]), len(spectra_wavelengths[line]))
+        for spec in spectra_observed[line][ph]:
             spectra_background_I[line][ph][spec] = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
                                              spectra_synth_wavelengths,
                                              spectra_synth_I, spectra_wavelengths[line],
@@ -188,21 +194,50 @@ for line in balmer_lines:
                                              spectra_synth_I, spectra_wavelengths[line],
                                              spectra_observed[line][ph][spec])
 
-###### uncertainty on the data #################################################
+"""
+=======================
+Uncertainty of the data
+=======================
+"""
 
 standard_deviation = {}
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
-    signal_to_noise = pickle.load(f)
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
-    uncertainty_background = pickle.load(f)
+signal_to_noise    = {}
+for line in balmer_lines:
+    standard_deviation[line] = {}
+    f_snr = open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_signal_to_noise_'+str(line)+'.txt', 'rb')
+    lines = f_snr.readlines()[:]
+    for l in lines:
+        l = l.decode('utf-8')
+        title = l[:7].strip()
+        value = eval(l[7:].split()[0])
+        signal_to_noise[title] = value
+    f_snr.close()
 
-for ph in uncertainty_background:
-    standard_deviation[ph] = {}
-    for spectrum in uncertainty_background[ph]:
-        standard_deviation[ph][spectrum] = \
-                    2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
+    if line == 'halpha':
+        with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
+            uncertainty_background = pickle.load(f)
 
-###### Cut the wavelength region if necessary ##################################
+        for ph in uncertainty_background:
+            standard_deviation[line][ph] = {}
+            for spectrum in uncertainty_background[ph]:
+                standard_deviation[line][ph][spectrum] = \
+                            2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
+                            # Twice the uncertainty from S/N because the input spectrum is a subtraction between two spectra
+                            # --> spec_tot = spec_1 - spec_2
+                            # ----> delta_tot = delta_1 + delta_2
+
+    else:
+        for ph in phases:
+            standard_deviation[line][ph] = {}
+            for spec in spectra_observed[line][ph]:
+                standard_deviation[line][ph][spec] = \
+                            1./signal_to_noise[spectrum]
+
+"""
+======================================
+Cut the wavelength region if necessary
+======================================
+"""
 
 # wavmin = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_begin))
 # wavmax = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_end))
@@ -214,6 +249,79 @@ for ph in uncertainty_background:
 #         spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
 #         standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
 
-wavelength_bins = len(spectra_wavelengths)
-wavelength_bin_size = \
-            (spectra_wavelengths[-1] - spectra_wavelengths[0]) / (wavelength_bins - 1)
+wavelength_bins     = {}
+wavelength_bin_size = {}
+for line in balmer_lines:
+    wavelength_bins[line] = len(spectra_wavelengths[line])
+    wavelength_bin_size[line] = \
+            (spectra_wavelengths[line][-1] - spectra_wavelengths[line][0]) / (wavelength_bins[line] - 1)
+
+
+"""
+=======================
+Create the binary orbit
+=======================
+"""
+
+primary_orbit = {}
+secondary_orbit = {}
+
+for ph in phases:
+    prim_pos, sec_pos, prim_vel, sec_vel = geometry_binary.pos_vel_primary_secondary(
+                                           ph, period, omega, ecc, primary_sma_AU,
+                                           secondary_sma_AU, T_inf, T0)
+    primary_orbit[ph]               = {}
+    secondary_orbit[ph]             = {}
+    primary_orbit[ph]['position']   = prim_pos
+    primary_orbit[ph]['velocity']   = prim_vel
+    secondary_orbit[ph]['position'] = sec_pos
+    secondary_orbit[ph]['velocity'] = sec_vel
+
+"""
+==========================================
+Create post-AGB star with a Fibonacci grid
+==========================================
+"""
+
+import Star
+postAGB = Star.Star(primary_radius_au, primary_orbit[phase_test]['position'], inclination, gridpoints_primary)
+postAGB._set_grid()
+postAGB._set_grid_location()
+
+"""
+===========================================
+Create the grid for temperature and density
+===========================================
+"""
+
+jet_temperature = np.arange(T_min, T_max+1, T_step)
+jet_density_log = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
+jet_density     = 10**(jet_density_log)
+
+
+"""
+=========================
+Create the output folders
+=========================
+"""
+
+
+
+"""
+==============
+Create the jet
+==============
+"""
+
+jet = Cone.Stellar_jet_simple(inclination, jet_angle,
+                              velocity_centre, velocity_edge,
+                              jet_type,
+                              jet_centre=secondary_orbit[phase_test]['position'])
+
+
+jet_temperature         = 5000      # The jet temperature (K)
+jet_density_max         = 1.e15      # The jet number density at its outer edge (m^-3)
+
+jet_thermal_velocity    = ( 2 * constants.k * jet_temperature / constants.m_p)**.5 # The jet thermal velocity (m/s)
+jet_frequency_0         = constants.c / balmer_properties['wavelength'][line]
+spectra_frequencies = constants.c / spectra_wavelengths
