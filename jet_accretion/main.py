@@ -2,6 +2,7 @@ import sys
 sys.path.append('/lhome/dylanb/astronomy/MCMC_main/MCMC_main')
 sys.path.append('/lhome/dylanb/astronomy/jet_accretion/jet_accretion')
 import os
+import shutil
 import argparse
 import numpy as np
 import matplotlib.pylab as plt
@@ -17,6 +18,7 @@ import geometry_binary
 import scale_intensity
 from radiative_transfer import *
 from astropy import units as u
+import datetime
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     ============================================================================
@@ -82,7 +84,9 @@ degr_to_rad     = np.pi/180.    # Degrees to radians
 
 ###### Read in the object specific and model parameters ########################
 parameters = {}
-with open('input_data/'+str(object_id)+'/'+str(object_id)+'.dat') as f:
+InputDir   = 'input_data/'+str(object_id)+'/'
+InputFile = str(object_id)+'.dat'
+with open(InputDir+InputFile) as f:
     lines  = f.readlines()[2:]
 
 for l in lines:
@@ -148,12 +152,15 @@ Stellar spectra
 
 spectra_observed    = {}
 spectra_wavelengths = {}
+spectra_frequencies = {}
 spectra_background  = {}
 for line in balmer_lines:
     with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
         spectra_observed[line]    = pickle.load(f)
     with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
         spectra_wavelengths[line] = pickle.load(f) * 1e-10
+        spectra_frequencies[line] = constants.c / spectra_wavelengths[line]
+
     with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_init_'+line+'.txt', 'rb') as f:
         spectra_background[line]  = pickle.load(f)
 
@@ -284,28 +291,9 @@ Create post-AGB star with a Fibonacci grid
 """
 
 import Star
-postAGB = Star.Star(primary_radius_au, primary_orbit[phase_test]['position'], inclination, gridpoints_primary)
+postAGB = Star.Star(primary_radius_au, np.array([0,0,0]), inclination, gridpoints_primary)
 postAGB._set_grid()
 postAGB._set_grid_location()
-
-"""
-===========================================
-Create the grid for temperature and density
-===========================================
-"""
-
-jet_temperature = np.arange(T_min, T_max+1, T_step)
-jet_density_log = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
-jet_density     = 10**(jet_density_log)
-
-
-"""
-=========================
-Create the output folders
-=========================
-"""
-
-
 
 """
 ==============
@@ -315,13 +303,214 @@ Create the jet
 
 jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               velocity_centre, velocity_edge,
-                              jet_type,
-                              jet_centre=secondary_orbit[phase_test]['position'])
+                              jet_type)
+
+"""
+===========================================
+Create the grid for temperature and density
+===========================================
+"""
+
+jet_temperatures = np.arange(T_min, T_max+1, T_step)
+jet_density_log = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
+jet_densities     = 10**(jet_density_log)
 
 
-jet_temperature         = 5000      # The jet temperature (K)
-jet_density_max         = 1.e15      # The jet number density at its outer edge (m^-3)
+"""
+===================================
+Create the output folders and files
+===================================
+"""
 
-jet_thermal_velocity    = ( 2 * constants.k * jet_temperature / constants.m_p)**.5 # The jet thermal velocity (m/s)
-jet_frequency_0         = constants.c / balmer_properties['wavelength'][line]
-spectra_frequencies = constants.c / spectra_wavelengths
+###### Create the output directories ###########################################
+
+Path              = "../../jet_accretion_output/"
+OutputDirObjectID = Path+object_id
+OutputDir         = OutputDirObjectID+'/'+object_id+'_'+jet_type+'_T'+str(T_min)+'_'+str(T_max)+'_'+str(T_step)+'_rho_'+str(density_log10_min)+'_'+str(density_log10_max)+'_'+str(density_log10_step)
+
+if not os.path.exists(OutputDirObjectID):
+
+    os.makedirs(OutputDirObjectID)
+
+NewDirNumber = 0
+NewDirCreated = False
+
+while NewDirCreated==False:
+
+    if not os.path.exists(OutputDir+'_'+str(NewDirNumber)):
+
+        os.makedirs(OutputDir+'_'+str(NewDirNumber))
+        NewDirCreated = True
+    else:
+
+        NewDirNumber += 1
+
+OutputDir = OutputDir+'_'+str(NewDirNumber)+'/'
+
+
+
+###### Create the log file and copy the inputfile to the output directory ########
+
+shutil.copyfile(InputDir+InputFile, OutputDir+InputFile)
+
+OutputLog = open(OutputDir+'output.log', 'w')
+
+OutputLog.write('This file contains the most important information of the run.\n')
+OutputLog.write('\n')
+OutputLog.write('Date \t %s \n' % datetime.datetime.now())
+OutputLog.write('Object: \t %s \n' % object_id)
+OutputLog.write('Balmer lines: \t %s \n' % str(balmer_lines))
+OutputLog.write('The jet type is %s \n' % jet_type)
+OutputLog.write('The inclination angle is %f degrees \n' % (inclination*180./np.pi))
+OutputLog.write('The jet angle is %f degrees\n' % (jet_angle*180./np.pi))
+OutputLog.write('The velocity at the centre of the jet is %f km/s \n' % velocity_centre)
+OutputLog.write('The velocity at the edge of the jet is %f km/s \n' % velocity_edge)
+OutputLog.write('The model is computed for jet temperatures between %dK and %dK in steps of %dK. \n' % (T_min, T_max, T_step))
+OutputLog.write('The model is computed for jet densities between 1e%dm^-3 and 1e%dm^-3 in increasing order of magnitudes of %d. \n' % (density_log10_min, density_log10_max, density_log10_step))
+OutputLog.write('\n')
+OutputLog.write('\n')
+# OutputLog.write(' \n' % )
+# OutputLog.write(' \n' % )
+OutputLog.close()
+
+
+"""
+===========================================================================
+Compute the spectral lines for the whole grid of temperatures and densities
+===========================================================================
+"""
+
+for jet_temperature in jet_temperatures:
+    ###### The jet temperature (K)
+
+    jet_thermal_velocity = ( 2 * constants.k * jet_temperature / constants.m_p)**.5 # The jet thermal velocity (m/s)
+
+    for jet_density_max in jet_densities:
+        ###### The jet number density at its outer edge (m^-3)
+
+        OutputDirTempRho = '%.0f_%.2e' % (jet_temperature,jet_density_max)
+        os.makedirs(OutputDir+OutputDirTempRho)
+
+        for line in balmer_lines:
+
+            os.makedirs(OutputDir+OutputDirTempRho+'/'+line)
+
+        for phase in phases:
+            ###### Calculate the radiative transfer through the jet for each
+            ###### orbital phase
+
+            postAGB.centre      = primary_orbit[phase]['position']
+            jet.jet_centre      = secondary_orbit[phase]['position']
+            postAGB._set_grid_location()
+
+            for spectrum in spectra_observed['halpha'][phase].keys():
+                ###### Iterate over all spectra with this phase
+
+                intensity = {line:np.zeros(wavelength_bins[line]) for line in balmer_lines}
+
+                for (pointAGB, coordAGB) in enumerate(postAGB.grid_location):
+                    ###### For each ray of light from a gridpoint on the
+                    ###### post-AGB star, we calculate the absorption by the jet
+
+                    jet._set_gridpoints(coordAGB, gridpoints_LOS)
+
+                    if jet.gridpoints is None:
+                        ###### The ray does not pass through the jet
+
+                        # intensity_point = list(0.*spectra_background_I[phase][spectrum])
+                        intensity_point = {line:list(spectra_background_I[line][phase][spectrum]) for line in balmer_lines}
+
+                    if jet.gridpoints is not None:
+                        ###### The ray passes through the jet
+
+                        jet._set_gridpoints_unit_vector()
+                        jet._set_gridpoints_polar_angle()
+
+                        ###### Jet velocity and density ########################
+                        jet_density_scaled      = jet.density(gridpoints_LOS, power_density)   # The scaled number density of the jet
+                        jet_density             = jet_density_scaled*jet_density_max   # The number density of the jet at each gridpoint (m^-3)
+                        jet_velocity            = jet.poloidal_velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
+                        jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, secondary_rad_vel) # Radial velocity of each gridpoint (km/s)
+                        jet_radvel_m_per_s      = jet_radvel_km_per_s * 1000 # Radial velocity of each gridpoint (m/s)
+                        jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
+                        jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
+                        jet_radvel_gradient     = jet.radial_velocity_gradient(jet_radvel_m_per_s, jet_delta_gridpoints_m) # Radial velocity gradient of each gridpoint (s^-1)
+                        # The shifted central frequency of the line
+                        jet_frequency_0_rv      = {line:balmer_properties['frequency'][line] * (1. - jet_radvel_m_per_s / constants.c) for line in balmer_lines}
+                        # The frequency width due to the thermal velocity
+                        jet_delta_nu_thermal    = {line:jet_thermal_velocity * jet_frequency_0_rv[line] / constants.c for line in balmer_lines}
+
+                        """
+                        Synthetic line profile and EW for a specific object given a temperature and density
+                        """
+
+                        jet_n_e    = np.zeros(len(jet_density))     # Jet electron number density (m^-3)
+                        jet_n_HI   = np.zeros(len(jet_density))     # Jet neutral H number density (m^-3)
+                        jet_n_HI_2 = np.zeros(len(jet_density))     # Jet neutral H in the first excited state (m^-3)
+
+                        for point, d in enumerate(jet_density):
+                            jet_n_e[point]       = ie.n_electron_for_hydrogen(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, jet_density[point])
+                            jet_n_HI[point]      = jet_density[point] * ie.saha_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, n_e=jet_n_e[point])
+                            jet_n_HI_2[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 2, n=jet_n_e[point]) # HI in energy level n=2
+
+                        # plt.semilogy(jet.gridpoints[:,1], jet_density/np.max(jet_density), label='scaled density')
+                        # plt.semilogy(jet.gridpoints[:,1], jet_n_HI_2/np.max(jet_n_HI_2), label='density HI_2')
+                        # plt.semilogy(jet.gridpoints[:,1], jet_radvel_km_per_s/np.max(jet_radvel_km_per_s), label='radial velocity')
+                        # plt.semilogy(jet.gridpoints[:,1], jet.gridpoints[:,2], label='height in jet')
+                        # plt.semilogy(jet.gridpoints[:,1], jet_radvel_gradient/np.max(jet_radvel_gradient), label='gradient radial velocity')
+                        # plt.legend()
+                        # plt.xlabel('distance through jet')
+                        # plt.ylabel('normalised quantity')
+                        # plt.show()
+                        # plt.plot(jet.gridpoints[:,1], jet_radvel_gradient)
+                        # plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s)
+                        # plt.show()
+
+                        # intensity_point = 0.*np.copy(spectra_background_I[phase][spectrum])
+                        intensity_point = {line:np.copy(spectra_background_I[line][phase][spectrum]) for line in balmer_lines}
+
+                        for pointLOS in range(gridpoints_LOS-1):
+                            # We first select the frequencies for which the current point in the jet
+                            # will cause absorption
+
+                            for line in balmer_lines:
+
+                                diff_nu = np.abs(jet_frequency_0_rv[line][pointLOS+1] - spectra_frequencies[line])
+                                indices_frequencies = np.where(diff_nu < 2. * jet_delta_nu_thermal[line][pointLOS+1])
+
+                                for index in indices_frequencies:
+
+                                    delta_tau = jet_delta_gridpoints_m \
+                                                      * opacity(spectra_frequencies[line][index],
+                                                                jet_temperature, jet_n_HI[pointLOS+1], jet_n_e[pointLOS+1],
+                                                                jet_n_HI_2[pointLOS+1],
+                                                                jet_radvel_m_per_s[pointLOS+1], line=line)
+                                    intensity_point[line][index] = rt_isothermal(spectra_wavelengths[line][index], jet_temperature, intensity_point[line][index], delta_tau)
+
+                    for line in balmer_lines:
+                        ###### add the spectrum for this ray to the lines
+
+                        intensity[line] += gridpoints_primary**-1 * np.array(intensity_point[line])
+
+
+                for line in balmer_lines:
+                    ###### write the output for this phase to the output directory
+                    Header = 'Synthetic %s line at phase %d' % (line, phase)
+                    np.savetxt(OutputDir+OutputDirTempRho+'/'+line+'/'+spectrum+'_'+str(phase)+'_'+line+'.txt', np.array(intensity[line]), header=Header)
+                    # f_line = open(OutputDir+balmer_line+'/'+spectrum+'_'+ph+'_'+line+'txt', 'w')
+                    # f.write()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print('done')
