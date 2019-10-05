@@ -19,6 +19,7 @@ import scale_intensity
 from radiative_transfer import *
 from astropy import units as u
 import datetime
+import EW
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
     ============================================================================
@@ -184,22 +185,45 @@ spectra_synth_I           *= 1e-7*1e10*1e4 # W m-2 m-1 sr-1
 spectra_background_I = {}   # The background spectra with the correct intensity (W m-2 m-1 sr-1)
 spectra_observed_I   = {}
 
+created_interpol_normalisation = {line:False for line in balmer_lines}
+scaling_interpolation          = {}
 
 for line in balmer_lines:
+
     spectra_background_I[line] = {}
     spectra_observed_I[line]   = {}
+
     for ph in phases:
+
         spectra_background_I[line][ph] = {}
         spectra_observed_I[line][ph]   = {}
+
         for spec in spectra_observed[line][ph]:
-            spectra_background_I[line][ph][spec] = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
-                                             spectra_synth_wavelengths,
-                                             spectra_synth_I, spectra_wavelengths[line],
-                                             spectra_background[line][ph][spec])
-            spectra_observed_I[line][ph][spec]   = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
-                                             spectra_synth_wavelengths,
-                                             spectra_synth_I, spectra_wavelengths[line],
-                                             spectra_observed[line][ph][spec])
+
+            # Correction in the normalisation of the spectra
+            # if line=='hbeta':
+            #     spectra_observed[line][ph][spec] *= 0.94
+            # if line=='hgamma':
+            #     spectra_observed[line][ph][spec] *= 1.00
+            # if line=='hdelta':
+            #     spectra_observed[line][ph][spec] *= 0.9
+            if created_interpol_normalisation[line]==True:
+                spectra_background_I[line][ph][spec] = spectra_background[line][ph][spec] * scaling_interpolation[line](spectra_wavelengths[line])
+                spectra_observed_I[line][ph][spec]   = spectra_observed[line][ph][spec] * scaling_interpolation[line](spectra_wavelengths[line])
+
+            else:
+                spectra_background_I[line][ph][spec], scaling_interpolation[line] = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
+                                                 spectra_synth_wavelengths,
+                                                 spectra_synth_I, spectra_wavelengths[line],
+                                                 spectra_background[line][ph][spec])
+                spectra_observed_I[line][ph][spec], scaling_interpolation[line]   = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
+                                                 spectra_synth_wavelengths,
+                                                 spectra_synth_I, spectra_wavelengths[line],
+                                                 spectra_observed[line][ph][spec])
+                created_interpol_normalisation[line] = True
+# for line in balmer_lines:
+#     with open('input_data/IRAS19135+3937/'+line+'/IRAS19135+3937_observed_'+line+'_corrected.txt', 'wb') as f:
+#         pickle.dump(spectra_observed[line], f)
 
 """
 =======================
@@ -262,7 +286,6 @@ for line in balmer_lines:
     wavelength_bins[line] = len(spectra_wavelengths[line])
     wavelength_bin_size[line] = \
             (spectra_wavelengths[line][-1] - spectra_wavelengths[line][0]) / (wavelength_bins[line] - 1)
-
 
 """
 =======================
@@ -347,8 +370,6 @@ while NewDirCreated==False:
 
 OutputDir = OutputDir+'_'+str(NewDirNumber)+'/'
 
-
-
 ###### Create the log file and copy the inputfile to the output directory ########
 
 shutil.copyfile(InputDir+InputFile, OutputDir+InputFile)
@@ -373,6 +394,103 @@ OutputLog.write('\n')
 # OutputLog.write(' \n' % )
 OutputLog.close()
 
+OutputEWModel = open(OutputDir+'EW_model.txt', 'w')
+OutputEWModel.write('The equivalent width (Angstrom) for the Balmer lines of the models over the whole spectrum\n')
+OutputEWModel.write('Temperature (K) and density\n')
+OutputEWModel.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+OutputEWModel.close()
+
+"""
+==========================================================================
+Calculate the equivalent width of the spectral lines for several intervals
+==========================================================================
+"""
+
+range_EW_calculation_km_per_s = 750
+range_EW_calculation_angstrom = {line:range_EW_calculation_km_per_s * 1000 / constants.c * balmer_properties['wavelength'][line] for line in balmer_lines}
+
+OutputLog = open(OutputDir+'output.log', 'a')
+OutputEW  = open(OutputDir+'EW_observations.txt', 'w')
+OutputLog.write('The equivalent width (Angstrom) for the Balmer lines of the observations over the whole spectrum\n')
+OutputLog.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+OutputEW.write('The equivalent width (Angstrom) for the Balmer lines of the observations over the whole spectrum\n')
+OutputEW.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+
+for phase in phases:
+    for spectrum in spectra_observed['halpha'][phase].keys():
+
+            OutputLog.write('\n%s\t%s\t' % (str(phase), spectrum))
+            OutputEW.write('\n%s\t%s\t' % (str(phase), spectrum))
+
+            for line in balmer_lines:
+
+                spectrum_absorption = spectra_observed[line][phase][spectrum] - spectra_background[line][phase][spectrum] + 1
+                EW_line = EW.equivalent_width(spectra_wavelengths[line]*1e10, spectrum_absorption)
+                OutputLog.write('%.4f\t' % EW_line)
+                OutputEW.write('%.4f\t' % EW_line)
+                # print(EW_line)
+                # if line=='halpha':
+                # plt.plot(spectra_wavelengths[line]*1e10,spectra_background[line][phase][spectrum])
+                # plt.plot(spectra_wavelengths[line]*1e10, 1-spectrum_absorption )
+                # plt.plot(spectra_wavelengths[line]*1e10,spectra_observed[line][phase][spectrum])
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] - 2*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] - 1*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] + 2*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] + 1*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*balmer_properties['wavelength'][line], color='k')
+                # plt.axhline(1., color='k')
+                # plt.axhline(0., color='k')
+                # plt.show()
+
+OutputLog.write('\nThe equivalent width (Angstrom) for the Balmer lines of the observations over a total width of %.3f km/s\n' % (4.*range_EW_calculation_km_per_s) )
+OutputLog.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+OutputEW.write('\nThe equivalent width (Angstrom) for the Balmer lines of the observations over a total width of %.3f km/s\n' % (4.*range_EW_calculation_km_per_s) )
+OutputEW.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+
+for phase in phases:
+
+    for spectrum in spectra_observed['halpha'][phase].keys():
+
+            OutputLog.write('\n%s\t%s\t' % (str(phase), spectrum))
+            OutputEW.write('\n%s\t%s\t' % (str(phase), spectrum))
+
+            for line in balmer_lines:
+
+                spectrum_absorption = spectra_observed[line][phase][spectrum] - spectra_background[line][phase][spectrum] + 1
+                EW_line = EW.equivalent_width(spectra_wavelengths[line]*1e10, spectrum_absorption,
+                                            cut=True,
+                                            wave_min=1e10*(balmer_properties['wavelength'][line] - 2*range_EW_calculation_angstrom[line]),
+                                            wave_max=1e10*(balmer_properties['wavelength'][line] + 2*range_EW_calculation_angstrom[line]))
+                OutputLog.write('%.4f\t' % EW_line)
+                OutputEW.write('%.4f\t' % EW_line)
+
+OutputLog.write('\nThe equivalent width (Angstrom) for the Balmer lines of the observations over a total width of %.3f km/s\n' % (2.*range_EW_calculation_km_per_s))
+OutputLog.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+OutputEW.write('\nThe equivalent width (Angstrom) for the Balmer lines of the observations over a total width of %.3f km/s\n' % (2.*range_EW_calculation_km_per_s))
+OutputEW.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
+
+for phase in phases:
+
+    for spectrum in spectra_observed['halpha'][phase].keys():
+
+            OutputLog.write('\n%s\t%s\t' % (str(phase), spectrum))
+            OutputEW.write('\n%s\t%s\t' % (str(phase), spectrum))
+
+            for line in balmer_lines:
+
+                spectrum_absorption = spectra_observed[line][phase][spectrum] - spectra_background[line][phase][spectrum] + 1
+                EW_line = EW.equivalent_width(spectra_wavelengths[line]*1e10, spectrum_absorption,
+                                            cut=True,
+                                            wave_min=1e10*(balmer_properties['wavelength'][line] - range_EW_calculation_angstrom[line]),
+                                            wave_max=1e10*(balmer_properties['wavelength'][line] + range_EW_calculation_angstrom[line]))
+                OutputLog.write('%.4f\t' % EW_line)
+                OutputEW.write('%.4f\t' % EW_line)
+
+OutputLog.write('\n')
+OutputEW.write('\n')
+OutputLog.close()
+OutputEW.close()
+
 
 """
 ===========================================================================
@@ -387,6 +505,11 @@ for jet_temperature in jet_temperatures:
 
     for jet_density_max in jet_densities:
         ###### The jet number density at its outer edge (m^-3)
+
+        with open(OutputDir+'EW_model.txt', 'a') as f_out:
+
+            f_out.write('\n')
+            f_out.write('\n%.0f\t%.2e\t' % (jet_temperature,jet_density_max))
 
         OutputDirTempRho = '%.0f_%.2e' % (jet_temperature,jet_density_max)
         os.makedirs(OutputDir+OutputDirTempRho)
@@ -453,19 +576,6 @@ for jet_temperature in jet_temperatures:
                             jet_n_HI[point]      = jet_density[point] * ie.saha_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, n_e=jet_n_e[point])
                             jet_n_HI_2[point]    = jet_density[point] * ie.saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, jet_temperature, 1, 2, n=jet_n_e[point]) # HI in energy level n=2
 
-                        # plt.semilogy(jet.gridpoints[:,1], jet_density/np.max(jet_density), label='scaled density')
-                        # plt.semilogy(jet.gridpoints[:,1], jet_n_HI_2/np.max(jet_n_HI_2), label='density HI_2')
-                        # plt.semilogy(jet.gridpoints[:,1], jet_radvel_km_per_s/np.max(jet_radvel_km_per_s), label='radial velocity')
-                        # plt.semilogy(jet.gridpoints[:,1], jet.gridpoints[:,2], label='height in jet')
-                        # plt.semilogy(jet.gridpoints[:,1], jet_radvel_gradient/np.max(jet_radvel_gradient), label='gradient radial velocity')
-                        # plt.legend()
-                        # plt.xlabel('distance through jet')
-                        # plt.ylabel('normalised quantity')
-                        # plt.show()
-                        # plt.plot(jet.gridpoints[:,1], jet_radvel_gradient)
-                        # plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s)
-                        # plt.show()
-
                         # intensity_point = 0.*np.copy(spectra_background_I[phase][spectrum])
                         intensity_point = {line:np.copy(spectra_background_I[line][phase][spectrum]) for line in balmer_lines}
 
@@ -492,18 +602,26 @@ for jet_temperature in jet_temperatures:
 
                         intensity[line] += gridpoints_primary**-1 * np.array(intensity_point[line])
 
+                with open(OutputDir+'EW_model.txt', 'a') as f_out:
+
+                    f_out.write('\n%s\t%s\t' % (str(phase), spectrum))
 
                 for line in balmer_lines:
                     ###### write the output for this phase to the output directory
+
                     Header = 'Synthetic %s line at phase %d' % (line, phase)
                     np.savetxt(OutputDir+OutputDirTempRho+'/'+line+'/'+spectrum+'_'+str(phase)+'_'+line+'.txt', np.array(intensity[line]), header=Header)
-                    # f_line = open(OutputDir+balmer_line+'/'+spectrum+'_'+ph+'_'+line+'txt', 'w')
-                    # f.write()
 
+                    ###### Normalise the spectrum to compute the equivalent width
+                    spectrum_absorption = np.array(intensity[line]) / scaling_interpolation[line](spectra_wavelengths[line]) - spectra_background[line][phase][spectrum] + 1
+                    EW_line = EW.equivalent_width(spectra_wavelengths[line]*1e10, spectrum_absorption,
+                                                    cut=True,
+                                                    wave_min=1e10*(balmer_properties['wavelength'][line] - 1*range_EW_calculation_angstrom[line]),
+                                                    wave_max=1e10*(balmer_properties['wavelength'][line] + 1*range_EW_calculation_angstrom[line]))
+                                                    
+                    with open(OutputDir+'EW_model.txt', 'a') as f_out:
 
-
-
-
+                        f_out.write('%.4f\t' % EW_line)
 
 
 
