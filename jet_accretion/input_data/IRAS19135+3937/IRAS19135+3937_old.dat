@@ -18,21 +18,21 @@ v_min               60.                 km s^-1
 v_max               600.                km s^-1
 Jet_model           #####            #####
 jet_type            simple_stellar_jet
-incl                67.76               degrees
-jet_angle           67.44                degrees
-const_optical_depth 0.75
-velocity_centre     822              km s^-1
-velocity_edge       21                km s^-1
-radius_primary_a1   0.625              a1
-radius_primary_au   0.135             AU
+incl                78.8               degrees
+jet_angle           75.9                degrees
+const_optical_depth 1.94
+velocity_centre     1210              km s^-1
+velocity_edge       11                km s^-1
+radius_primary_a1   0.66              a1
+radius_primary_au   0.1395             AU
 T_eff               6250              K
 phi                 0.                degrees
 c_vel               2
 c_den               8
-T_min               5400              Kelvin
+T_min               1200              Kelvin
 T_max               5800              Kelvin
 T_step              200               Kelvin
-rho_min             15.4                log10 m^-3
+rho_min             14                log10 m^-3
 rho_max             16                log10 m^-3
 rho_step            0.2                 log10 m^-3
 BJD1                1455700.             days

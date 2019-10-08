@@ -129,10 +129,10 @@ def u_a(nu, nu_0, n_HI, n_e, Temp, rv, line='halpha'):
                             'vdw' : {'halpha' : 4.4e-14, 'hbeta' : 1, 'hgamma' : 1, 'hdelta' : 1},
                             'stark' : {'halpha' : 1.17e-13, 'hbeta' : 1, 'hgamma' : 1, 'hdelta' : 1}}
 
+    nu_0_rv    = nu_0 * (1. - rv / constants.c)
+
     if line=='halpha':
 
-        nu_0       = constants.c / ( 6562.8 * 1e-10 )
-        nu_0_rv    = nu_0 * (1. - rv / constants.c)
         C_rad      = 8.2 * 1e-3 * 1e-10
         C_vdw      = 5.5 * 1e-3 * 1e-10
         C_stark    = 1.47 * 1e-2 * 1e-10
@@ -141,8 +141,7 @@ def u_a(nu, nu_0, n_HI, n_e, Temp, rv, line='halpha'):
         a          = gamma_damp / ( 4. * np.pi * delta_nu )
         u          = ( nu - nu_0_rv ) / delta_nu
 
-    if line=='hbeta':
-        nu_0       = constants.c / ( 4861.3 * 1e-10 )
+    elif line=='hbeta' or line=='hgamma' or line=='hdelta':
         nu_0_rv    = nu_0 * (1. - rv / constants.c)
         # C_rad      = 1e6 * 1e-10
         # C_vdw      = 5.5 * 1e-3 * 1e-20
@@ -304,7 +303,7 @@ def opacity_both(nu, T, n_HI, n_e, n_l, delta_gridpoints, Blu, rv, velocity_grad
     abs_coeff_si   = abs_coeff_cgs * 1e2
     return abs_coeff_si
 
-def opacity(nu, T, n_HI, n_e, n_l, Blu, rv, line='halpha'):
+def opacity(nu, T, n_HI, n_e, n_l, rv, line='halpha'):
     """
     Calculate the absorption coefficient alpha
 
@@ -352,7 +351,7 @@ if __name__=='__main__':
     """
     from astropy import units as u
     lambdas   = np.arange(1e-7,1e-5,1e-8)
-    Temp      = 4000 # jet temperature
+    Temp      = 5200 # jet temperature
     lams      = np.arange(50, 2000)*1.e-9 #m
     Ts        = np.arange(5e3, 11e3, 1e3) #K
     Temp_star = 6250 #K
@@ -393,14 +392,14 @@ if __name__=='__main__':
     # wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_415971.txt')
     # wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_415971.txt')
     # wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_415971.txt')
-    wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_416105.txt')
-    wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_416105.txt')
-    wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_416105.txt')
+    wave_range_IRAS, I_IRAS = np.loadtxt('input_data/IRAS19135+3937/halpha/spectra/IRAS19135+3937_416105.txt')
+    wave_range_beta, I_beta = np.loadtxt('input_data/IRAS19135+3937/hbeta//spectra/IRAS19135+3937_416105.txt')
+    wave_range_gamma, I_gamma = np.loadtxt('input_data/IRAS19135+3937/hgamma//spectra/IRAS19135+3937_416105.txt')
     # wave_range_IRAS, I_IRAS = np.loadtxt('IRAS19135+3937/halpha/IRAS19135+3937_399553.txt')
     # wave_range_beta, I_beta = np.loadtxt('IRAS19135+3937/hbeta/IRAS19135+3937_399553.txt')
     # wave_range_gamma, I_gamma = np.loadtxt('IRAS19135+3937/hgamma/IRAS19135+3937_399553.txt')
     # wave_range_IRAS = wave_range_IRAS + (6562.8) * 1300/constants.c
-    wave_range, I_0    = np.loadtxt('IRAS19135+3937/synthetic/06250_g+1.0_m10p00_hr.txt')
+    wave_range, I_0    = np.loadtxt('input_data/IRAS19135+3937/synthetic/06250_g+1.0_m10p00_hr.txt')
     wave_range        *= 1e-9 #m
     wave_range_IRAS   *= 1e-10
     I_0               *= 1e-7*1e10*1e4 #W m-2 m-1 sr-1
@@ -448,7 +447,7 @@ if __name__=='__main__':
             # if wave > 4840e-10 and wave < 4880e-10:
                 nu_test         = constants.c / wave
                 delta_s         = np.abs( jet_positions[1:] - jet_positions[0:-1] )
-                delta_tau = delta_s * opacity(nu_test, Temp, jet_n_HI[1:], jet_n_e[1:], jet_n_HI_2[1:], B_lu[0], jet_radial_velocity[1:], line='halpha')
+                delta_tau = delta_s * opacity(nu_test, Temp, jet_n_HI[1:], jet_n_e[1:], jet_n_HI_2[1:], jet_radial_velocity[1:], line='halpha')
                 for point in range(jet_gridpoints-1):
                     I[i]    = rt_isothermal(wave, Temp, I[i], delta_tau[point])
 

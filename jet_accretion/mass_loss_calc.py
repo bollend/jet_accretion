@@ -60,7 +60,7 @@ velocity_centre           = eval(parameters['velocity_centre'])         # km/s
 velocity_edge             = eval(parameters['velocity_edge'])           # km/s
 jet_velocity_max          = 1000 * velocity_centre                      # m/s
 jet_velocity_min          = 1000 * velocity_edge                        # m/s
-jet_density_max           = 1e15                                        # m^-3
+jet_density_max           = 2e15                                        # m^-3
 jet_density_max_kg_per_m3 = jet_density_max                             # kg/m^3
 
 
@@ -73,8 +73,8 @@ def func_1(x):
 def func_2(x):
     return np.arctan(x)**10 * x
 
-I_int  = integrate.quad(func_1, 0 , np.tan(jet_angle))
-II_int = integrate.quad(func_2, 0 , np.tan(jet_angle))
+I_int  = integrate.quad(func_1, 0*50/180*np.pi , np.tan(jet_angle))
+II_int = integrate.quad(func_2, 0*50/180*np.pi , np.tan(jet_angle))
 
 jet_mass_loss_particle_per_s = 2. * np.pi * jet_density_max_kg_per_m3\
                 * height_0_m**2 * jet_angle**-8\
@@ -86,3 +86,12 @@ jet_mass_loss_Msol_per_yr =  M_sol**-1 * year * jet_mass_loss_kg_per_s
 
 print('The jet mass-loss rate for a density of %.2e m^-3 is: %.3e kg/s' % (jet_density_max, jet_mass_loss_kg_per_s))
 print('The jet mass-loss rate for a density of %.2e m^-3 is: %.3e Msol/year' % (jet_density_max,jet_mass_loss_Msol_per_yr))
+
+# number_radii = 10000
+# radius = np.linspace(0, height_0_m*np.tan(jet_angle)+1, number_radii)
+# radius_max = height_0_m*np.tan(jet_angle)
+# density = jet_density_max * (np.arctan(radius/height_0_m)/ np.arctan(radius_max/height_0_m))**8
+# velocity = jet_velocity_max + (jet_velocity_min - jet_velocity_max)*(np.arctan(radius/height_0_m)/ np.arctan(radius_max/height_0_m))**2
+#
+# masslosses = M_sol**-1 * year * m_p * density * velocity * 2.* np.pi * radius * radius_max / number_radii
+# print(np.sum(masslosses))

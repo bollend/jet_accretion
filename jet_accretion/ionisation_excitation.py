@@ -173,7 +173,7 @@ if __name__=='__main__':
     E_ionisation_H = 13.6
     E_levels_H     = np.array([0, 10.2, 12.1, 12.76])
     degeneracy_H   = np.array([2, 8, 18, 32])
-    Temp           = 5777
+    Temp           = 5400
     Temp_range     = np.arange(1e2, 1e4, 1e2)
 
     part_func_H = partfunc_E(E_levels_H, degeneracy_H, Temp)
@@ -217,9 +217,9 @@ if __name__=='__main__':
     E_levels_H          = {1: np.array([0, 10.2, 12.1, 12.76]), 2: np.array([0])}
     degeneracy_H        = {1: np.array([2, 8, 18, 32]), 2: np.array([1])}
     P                   = 1.5
-    n_el                = 3.79881747782e+17
+    n_el                = 5.3e+14
     Temp_arr            = np.arange(1e2,2e4, 1e2)
-    n                   = 1e20
+    n                   = 2e15
     print('test', n_electron_for_hydrogen(E_ionisation_H, E_levels_H, degeneracy_H, Temp, n))
     fraction_HII_over_H = saha_E(E_ionisation_H, E_levels_H, degeneracy_H, Temp, 2, n_e=n_el)
     print("The fraction of ionised hydrogen for T = %.f and Pe = %.3f is" \
@@ -247,7 +247,7 @@ if __name__=='__main__':
 
     ion         = 1
     level       = 2
-    fraction_SB = saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, Temp, ion, level, p=P)
+    fraction_SB = saha_boltz_E(E_ionisation_H, E_levels_H, degeneracy_H, Temp, ion, level, n=n_el)
     print("The fraction of hydrogen in ion stage %.f in level %.f for T = %.f and Pe = %.3f is" \
                 % (ion, level, Temp, P), fraction_SB)
 
@@ -288,7 +288,7 @@ if __name__=='__main__':
     ax.set_xlabel("Temperature $T$ ($K$)")
     ax.set_ylabel("Fraction of total H in given ionisation state $I$ and energy level $i$")
     ax.legend()
-    # ax.set_yscale("log")
-    # ax.set_ylim(10e-20, 1e2)
+    ax.set_yscale("log")
+    ax.set_ylim(10e-20, 1e2)
     ax.grid(lw=0.5)
     plt.show()
