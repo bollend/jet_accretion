@@ -226,9 +226,9 @@ jet_temperatures = np.arange(T_min, T_max+1, T_step)
 jet_density_log  = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
 jet_densities    = 10**(jet_density_log)
 
-jet_temperatures = np.arange(4000, 7000+1, T_step)
-jet_density_log  = np.arange(14, 17+0.001, density_log10_step)
-jet_densities    = 10**(jet_density_log)
+# jet_temperatures = np.arange(4000, 7000+1, T_step)
+# jet_density_log  = np.arange(14, 17+0.001, density_log10_step)
+# jet_densities    = 10**(jet_density_log)
 
 """
 ==========================================================================
@@ -267,6 +267,7 @@ for phase in phases:
 
                 axes[numbers[line][0], numbers[line][1]].scatter(phase,EW_line,color=colors[line])
                 axes[numbers[line][0], numbers[line][1]].errorbar(phase,EW_line, yerr=uncertainty_EW,color=colors[line])
+
 OutputEW.write('\n')
 OutputEW.close()
 plt.show()
@@ -278,8 +279,10 @@ Normalise the equivalent widths
 """
 
 # The phases for which the EW should be zero
-phases_zero = [11, 14, 22, 74, 82, 94, 98, 99]
-# phases_zero = [74, 82, 94, 98, 99]
+if object_id=='IRAS19135+3937':
+
+    # phases_zero = [11, 14, 22, 74, 82, 94, 98, 99]
+    phases_zero = [74, 82, 94, 98, 99]
 
 EW_zero = {line: 0 for line in balmer_lines}
 for line in balmer_lines:
@@ -318,17 +321,22 @@ Fit the equivalent width of each model to the observations
 ==========================================================
 """
 
+chi_squared_grid = {}
+OutputEW  = open(OutputDir+'EW_fit.txt', 'w')
 
 for jet_temperature in jet_temperatures:
     ###### The jet temperature (K)
+
+    chi_squared_grid[jet_temperature] = {jet_density_max:0 for jet_density_max in jet_densities}
 
     for jet_density_max in jet_densities:
         ###### The jet number density at its outer edge (m^-3)
 
         print('temperature %.0fK and density 10^%.2em^-3'% (jet_temperature,jet_density_max) )
         OutputDirTempRho = '%.0f_%.2e' % (jet_temperature,jet_density_max)
+        OutputEW.write('\n %.0f\t%.2e\t' % (jet_temperature,jet_density_max))
 
-        fig, axes = plt.subplots(2,2)
+        # fig, axes = plt.subplots(2,2)
         EW_model = {line:[] for line in balmer_lines}
 
         for line in balmer_lines:
@@ -347,25 +355,75 @@ for jet_temperature in jet_temperatures:
                                                     wave_max=1e10*(balmer_properties['wavelength'][line] + 1*range_EW_calculation_angstrom[line]))
 
                     EW_model[line].append(EW_line)
-                    axes[numbers[line][0], numbers[line][1]].scatter(phase,EW_observations[line][phase][spectrum]['values'],color=colors[line])
-                    axes[numbers[line][0], numbers[line][1]].errorbar(phase,EW_observations[line][phase][spectrum]['values'], yerr=EW_observations[line][phase][spectrum]['uncertainty'],color=colors[line])
+                    # axes[numbers[line][0], numbers[line][1]].scatter(phase,EW_observations[line][phase][spectrum]['values'],color=colors[line])
+                    # axes[numbers[line][0], numbers[line][1]].errorbar(phase,EW_observations[line][phase][spectrum]['values'], yerr=EW_observations[line][phase][spectrum]['uncertainty'],color=colors[line])
 
-            axes[numbers[line][0], numbers[line][1]].plot(phases,EW_model[line], color=colors[line])
-        axes[0,0].axhline(0)
-        axes[0,0].axhline(1)
-        axes[0,1].axhline(0)
-        axes[0,1].axhline(1)
-        axes[1,0].axhline(0)
-        axes[1,0].axhline(1)
-        axes[1,1].axhline(0)
-        axes[1,1].axhline(1)
-        plt.show()
+                    chi_squared_grid[jet_temperature][jet_density_max] += (EW_line - EW_observations[line][phase][spectrum]['values'])**2 / EW_observations[line][phase][spectrum]['uncertainty']**2
+
+            # axes[numbers[line][0], numbers[line][1]].plot(phases,EW_model[line], color=colors[line])
+
+        OutputEW.write('%.4f' % chi_squared_grid[jet_temperature][jet_density_max])
+
+        #
+        # axes[0,0].axhline(0)
+        # axes[0,0].axhline(1)
+        # axes[0,1].axhline(0)
+        # axes[0,1].axhline(1)
+        # axes[1,0].axhline(0)
+        # axes[1,0].axhline(1)
+        # axes[1,1].axhline(0)
+        # axes[1,1].axhline(1)
+        # plt.show()
+OutputEW.close()
 
 
 
+T = 0
+rho = 0
+chi_squared = np.zeros((len(jet_temperatures),len(jet_densities)))
+print(jet_densities)
+for jet_temperature in jet_temperatures:
+    rho = 0
+    for jet_density_max in jet_densities:
+
+        chi_squared[T,rho] = chi_squared_grid[jet_temperature][jet_density_max]
+        rho += 1
+
+    T += 1
+
+from scipy.stats import kde
+print(chi_squared)
+nbins = 10
+xi, yi = np.mgrid[jet_temperatures.min():jet_temperatures.max():len(jet_temperatures)*1j, jet_density_log.min():jet_density_log.max():len(jet_density_log)*1j]
+plt.pcolormesh(xi, yi, chi_squared.reshape(xi.shape), cmap=plt.cm.Greens_r)
+plt.contour(xi, yi, chi_squared.reshape(xi.shape) )
+plt.colorbar()
+plt.show()
 
 
+probabilities = np.exp(-0.5*chi_squared**2)
+probabilities_sum = np.sum(probabilities)
+probabilities_normalised = probabilities / probabilities_sum
+print(probabilities_normalised)
+plt.pcolormesh(xi,yi, probabilities_normalised.reshape(xi.shape), cmap=plt.cm.Greens_r)
+plt.contour(xi,yi, probabilities_normalised.reshape(xi.shape))
+plt.colorbar()
 
+probabilities_temperature = np.sum(probabilities_normalised, axis=1)
+probabilities_density = np.sum(probabilities_normalised, axis=0)
+print('probabilities_temperature', probabilities_temperature)
+print('probabilities_density', probabilities_density)
+mean_temperature = np.sum(jet_temperatures*probabilities_temperature)
+mean_density = np.sum(jet_density_log*probabilities_density)
+
+std_temperature = np.sum((mean_temperature - jet_temperatures)**2*probabilities_temperature)
+std_density = np.sum((mean_density - jet_density_log)**2*probabilities_density)
+print('mean and std temp is', mean_temperature, std_temperature)
+print('mean and std density is ', mean_density, std_density)
+fig, axes = plt.subplots(1,2)
+axes[0].plot(jet_temperatures, probabilities_temperature)
+axes[1].plot(jet_density_log, probabilities_density)
+plt.show()
 
 
 

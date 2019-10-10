@@ -139,11 +139,11 @@ Stellar spectra
 ###### Observed spectra, background spectra, and wavelength region #############
 spectrum_test = '416105'
 phase_test    = 45
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
     spectra_observed    = pickle.load(f)
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
     spectra_wavelengths = pickle.load(f) * 1e-10
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_init_'+line+'.txt', 'rb') as f:
+with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_init_'+line+'.txt', 'rb') as f:
     spectra_background  = pickle.load(f)
 phases = list()
 spectra = list()
@@ -169,27 +169,27 @@ for ph in phases:
     spectra_background_I[ph] = {}
     spectra_observed_I[ph]   = {}
     for spec in spectra_observed[ph].keys():
-        spectra_background_I[ph][spec] = scale_intensity.scale_intensity(wave_0[line],
+        spectra_background_I[ph][spec], scaling_interpolation = scale_intensity.scale_intensity(wave_0[line],
                                          spectra_synth_wavelengths,
                                          spectra_synth_I, spectra_wavelengths,
                                          spectra_background[ph][spec])
-        spectra_observed_I[ph][spec]   = scale_intensity.scale_intensity(wave_0[line],
+        spectra_observed_I[ph][spec], scaling_interpolation   = scale_intensity.scale_intensity(wave_0[line],
                                          spectra_synth_wavelengths,
                                          spectra_synth_I, spectra_wavelengths,
                                          spectra_observed[ph][spec])
 ###### uncertainty on the data #################################################
 
-standard_deviation = {}
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
-    signal_to_noise = pickle.load(f)
-with open('../jet_accretion/input_data/'+object_id+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
-    uncertainty_background = pickle.load(f)
-
-for ph in uncertainty_background:
-    standard_deviation[ph] = {}
-    for spectrum in uncertainty_background[ph]:
-        standard_deviation[ph][spectrum] = \
-                    2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
+# standard_deviation = {}
+# with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_signal_to_noise_'+str(line)+'.txt', 'rb') as f:
+#     signal_to_noise = pickle.load(f)
+# with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
+#     uncertainty_background = pickle.load(f)
+#
+# for ph in uncertainty_background:
+#     standard_deviation[ph] = {}
+#     for spectrum in uncertainty_background[ph]:
+#         standard_deviation[ph][spectrum] = \
+#                     2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
 
 ###### Cut the wavelength region if necessary ##################################
 
@@ -247,8 +247,8 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               velocity_centre, velocity_edge,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
-jet_temperature         = 5000      # The jet temperature (K)
-jet_density_max         = 1.e15      # The jet number density at its outer edge (m^-3)
+jet_temperature         = 5400      # The jet temperature (K)
+jet_density_max         = 1.e25      # The jet number density at its outer edge (m^-3)
 
 jet_thermal_velocity    = ( 2 * constants.k * jet_temperature / constants.m_p)**.5 # The jet thermal velocity (m/s)
 jet_frequency_0         = constants.c / balmer_properties['wavelength'][line]
@@ -282,8 +282,8 @@ for phase in phases:
             jet._set_gridpoints(coordAGB, gridpoints_LOS)
 
             if jet.gridpoints is None:
-                intensity_point = list(0.*spectra_background_I[phase][spectrum])
-                # intensity_point = list(spectra_background_I[phase][spectrum])
+                # intensity_point = list(0.*spectra_background_I[phase][spectrum])
+                intensity_point = list(spectra_background_I[phase][spectrum])
 
             if jet.gridpoints is not None:
 
@@ -330,8 +330,8 @@ for phase in phases:
                 # plt.plot(jet.gridpoints[:,1], jet_radvel_km_per_s)
                 # plt.show()
 
-                intensity_point = 0.*np.copy(spectra_background_I[phase][spectrum])
-                # intensity_point = np.copy(spectra_background_I[phase][spectrum])
+                # intensity_point = 0.*np.copy(spectra_background_I[phase][spectrum])
+                intensity_point = np.copy(spectra_background_I[phase][spectrum])
 
                 for pointLOS in range(gridpoints_LOS-1):
                     # We first select the frequencies for which the current point in the jet
@@ -343,7 +343,7 @@ for phase in phases:
                         delta_tau = jet_delta_gridpoints_m \
                                           * opacity(spectra_frequencies[index],
                                                     jet_temperature, jet_n_HI[pointLOS+1], jet_n_e[pointLOS+1],
-                                                    jet_n_HI_2[pointLOS+1], B_lu[0],
+                                                    jet_n_HI_2[pointLOS+1],
                                                     jet_radvel_m_per_s[pointLOS+1], line=line)
                         intensity_point[index] = rt_isothermal(spectra_wavelengths[index], jet_temperature, intensity_point[index], delta_tau)
 
@@ -385,7 +385,8 @@ for phase in phases:
             #             for pointLOS in range(gridpoints_LOS-1):
             #                 intensity_point[wavebin] = rt_isothermal(wave, jet_temperature, intensity_point[wavebin], delta_tau[pointLOS])
             #
-            # intensity += gridpoints_primary**-1 * np.array(intensity_point)
+
+            intensity += gridpoints_primary**-1 * np.array(intensity_point)
             # # plt.plot(spectra_wavelengths, intensity_point)
             # # plt.show()
 

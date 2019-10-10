@@ -44,6 +44,15 @@ height_0_m                = AU * height_0_AU  # m
 # jet_velocity_max          = 1.21e6                   # m/s
 # jet_velocity_min          = 1.1e4                    # m/s
 
+### random
+# jet_angle                 = 67.27 * degr_to_rad # radians
+# velocity_centre           = 898         # km/s
+# velocity_edge             = 19.77           # km/s
+# jet_velocity_max          = 1000 * velocity_centre                      # m/s
+# jet_velocity_min          = 1000 * velocity_edge                        # m/s
+# jet_density_max           = 2e15                                        # m^-3
+# jet_density_max_kg_per_m3 = jet_density_max                             # kg/m^3
+
 ###### Read in the object specific and model parameters ########################
 parameters = {}
 with open('../jet_accretion/input_data/'+str(object_id)+'/'+str(object_id)+'.dat') as f:

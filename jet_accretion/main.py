@@ -335,9 +335,8 @@ Create the grid for temperature and density
 """
 
 jet_temperatures = np.arange(T_min, T_max+1, T_step)
-jet_density_log = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
-jet_densities     = 10**(jet_density_log)
-
+jet_density_log  = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
+jet_densities    = 10**(jet_density_log)
 
 """
 ===================================
@@ -406,7 +405,7 @@ Calculate the equivalent width of the spectral lines for several intervals
 ==========================================================================
 """
 
-range_EW_calculation_km_per_s = 500
+range_EW_calculation_km_per_s = 750
 range_EW_calculation_angstrom = {line:range_EW_calculation_km_per_s * 1000 / constants.c * balmer_properties['wavelength'][line] for line in balmer_lines}
 
 OutputLog = open(OutputDir+'output.log', 'a')
@@ -428,19 +427,19 @@ for phase in phases:
                 EW_line = EW.equivalent_width(spectra_wavelengths[line]*1e10, spectrum_absorption)
                 OutputLog.write('%.4f\t' % EW_line)
                 OutputEW.write('%.4f\t' % EW_line)
-                print(EW_line)
+
                 # if line=='halpha':
-                plt.plot(spectra_wavelengths[line]*1e10,spectra_background[line][phase][spectrum])
-                plt.plot(spectra_wavelengths[line]*1e10, 1-spectrum_absorption )
-                plt.plot(spectra_wavelengths[line]*1e10,spectra_observed[line][phase][spectrum])
-                plt.axvline(1e10*(balmer_properties['wavelength'][line] - 2*range_EW_calculation_angstrom[line]))
-                plt.axvline(1e10*(balmer_properties['wavelength'][line] - 1*range_EW_calculation_angstrom[line]))
-                plt.axvline(1e10*(balmer_properties['wavelength'][line] + 2*range_EW_calculation_angstrom[line]))
-                plt.axvline(1e10*(balmer_properties['wavelength'][line] + 1*range_EW_calculation_angstrom[line]))
-                plt.axvline(1e10*balmer_properties['wavelength'][line], color='k')
-                plt.axhline(1., color='k')
-                plt.axhline(0., color='k')
-                plt.show()
+                # plt.plot(spectra_wavelengths[line]*1e10,spectra_background[line][phase][spectrum])
+                # plt.plot(spectra_wavelengths[line]*1e10, 1-spectrum_absorption )
+                # plt.plot(spectra_wavelengths[line]*1e10,spectra_observed[line][phase][spectrum])
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] - 2*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] - 1*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] + 2*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*(balmer_properties['wavelength'][line] + 1*range_EW_calculation_angstrom[line]))
+                # plt.axvline(1e10*balmer_properties['wavelength'][line], color='k')
+                # plt.axhline(1., color='k')
+                # plt.axhline(0., color='k')
+                # plt.show()
 
 OutputLog.write('\nThe equivalent width (Angstrom) for the Balmer lines of the observations over a total width of %.3f km/s\n' % (4.*range_EW_calculation_km_per_s) )
 OutputLog.write('Phase\tspectrum\tEW %s \n' % str(balmer_lines))
@@ -586,7 +585,7 @@ for jet_temperature in jet_temperatures:
                             for line in balmer_lines:
 
                                 diff_nu = np.abs(jet_frequency_0_rv[line][pointLOS+1] - spectra_frequencies[line])
-                                indices_frequencies = np.where(diff_nu < 2. * jet_delta_nu_thermal[line][pointLOS+1])
+                                indices_frequencies = np.where(diff_nu < 2.2 * jet_delta_nu_thermal[line][pointLOS+1])
 
                                 for index in indices_frequencies:
 
