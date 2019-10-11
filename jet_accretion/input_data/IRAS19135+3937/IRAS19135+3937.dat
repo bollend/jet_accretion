@@ -29,12 +29,12 @@ T_eff               6250              K
 phi                 0.                degrees
 c_vel               2
 c_den               8
-T_min               4000              Kelvin
+T_min               5000              Kelvin
 T_max               6000              Kelvin
-T_step              100               Kelvin
+T_step              500               Kelvin
 rho_min             14                log10 m^-3
-rho_max             18                log10 m^-3
-rho_step            0.1                 log10 m^-3
+rho_max             16                log10 m^-3
+rho_step            1                 log10 m^-3
 BJD1                1455700.             days
 BJD2                3456200             days
 w_c_halpha          6562.8

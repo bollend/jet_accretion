@@ -393,7 +393,7 @@ for jet_temperature in jet_temperatures:
 
 from scipy.stats import kde
 print(chi_squared)
-nbins = 10
+# nbins = 10
 xi, yi = np.mgrid[jet_temperatures.min():jet_temperatures.max():len(jet_temperatures)*1j, jet_density_log.min():jet_density_log.max():len(jet_density_log)*1j]
 plt.pcolormesh(xi, yi, chi_squared.reshape(xi.shape), cmap=plt.cm.Greens_r)
 plt.contour(xi, yi, chi_squared.reshape(xi.shape) )
