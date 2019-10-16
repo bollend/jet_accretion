@@ -1,0 +1,80 @@
+parameter           value              dimension
+------------------------------------------------------------
+Binary_parameters   #####              #####
+period              140.82              days
+T0                  2455233.9          BJD
+omega               95.8                degrees
+fm                  0.195                  M_sol
+ecc                 0.085
+asini               0.3074               AU
+gamma               -93.13             km s^-1
+K_p                 23.8              km s^-1
+m_p                 0.6                 M_p
+R_p                 1.                 R_p
+r_p                 0.2              AU
+v_min               60.                 km s^-1
+v_max               600.                km s^-1
+Jet_model           #####            #####
+jet_type            simple_stellar_jet
+incl                70               degrees
+jet_angle           66                degrees
+const_optical_depth 1.
+velocity_centre     822              km s^-1
+velocity_edge       10                km s^-1
+radius_primary_a1   0.65              a1
+radius_primary_au   0.21             AU
+T_eff               6250              K
+phi                 0.                degrees
+c_vel               2
+c_den               8
+T_min               2000              Kelvin
+T_max               6000              Kelvin
+T_step              500               Kelvin
+rho_min             13                log10 m^-3
+rho_max             18                log10 m^-3
+rho_step            1                 log10 m^-3
+BJD1                1455700.             days
+BJD2                3456200             days
+w_c_halpha          6562.8
+w_c_halpha_abs      6562.8
+w_c_hbeta           4861.3
+w_begin_halpha      6547.5
+w_end_halpha        6565.
+w_begin_halpha_abs  6547.5
+w_end_halpha_abs    6567.
+w_begin_hbeta       4820.
+w_end_hbeta         4865.
+wavelength_bins     801
+velocity_range      2000.
+points_pathlength   201
+points_primary      20
+sigma_clip          True
+sigma_upper         2.2
+inc_min             25*np.pi/180.
+inc_max             85.*np.pi/180.
+alp_min             4*np.pi/180.
+alp_max             85.*np.pi/180.
+constant_min        0.
+constant_max        10.
+sigma_min           0.01
+sigma_max           5.
+v_edge_min          0
+v_edge_max          250.
+v_axis_min          50.
+v_axis_max          1900.
+v_disk_p_min        0.01
+v_disk_p_max        1.
+r_Prim_min          0.02
+r_Prim_max          1.5
+nwalkers            128
+niter               5000
+photospheric        0
+synthetic           06250_g+1.0_m10p00_hr_vsini10.txt
+template            0
+previous_walkers_s  False
+previous_walkers_e  False
+previous_walkers_n  False
+previous_walkers_nc False
+previous_walkers_d  False
+previous_walkers_sd False
+emission            True

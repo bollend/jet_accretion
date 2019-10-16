@@ -48,8 +48,8 @@ w_begin_hbeta       4820.
 w_end_hbeta         4865.
 wavelength_bins     801
 velocity_range      2000.
-points_pathlength   400
-points_primary      40
+points_pathlength   801
+points_primary      8
 sigma_clip          True
 sigma_upper         2.2
 inc_min             25*np.pi/180.

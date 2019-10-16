@@ -7,7 +7,6 @@ import matplotlib.pylab as plt
 import scipy
 from scipy.constants import *
 from scipy import integrate
-from sympy import mpmath as mp
 import ionisation_excitation as ie
 import radiative_transfer as rt
 import pickle
