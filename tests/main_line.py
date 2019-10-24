@@ -168,6 +168,7 @@ for ph in phases:
     spectra_background_I[ph] = {}
     spectra_observed_I[ph]   = {}
     for spec in spectra_observed[ph].keys():
+        print('specsynwav', len(spectra_synth_wavelengths), 'specsyntI', len(spectra_synth_I), 'specwav', len(spectra_wavelengths), 'specback', len(spectra_background[ph][spec]))
         spectra_background_I[ph][spec], scaling_interpolation = scale_intensity.scale_intensity(wave_0[line],
                                          spectra_synth_wavelengths,
                                          spectra_synth_I, spectra_wavelengths,
