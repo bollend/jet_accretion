@@ -7,7 +7,7 @@ omega               95.8                degrees
 fm                  0.195                  M_sol
 ecc                 0.085
 asini               0.3074               AU
-gamma               -93.13             km s^-1
+gamma               -98.13             km s^-1
 K_p                 23.8              km s^-1
 m_p                 0.6                 M_p
 R_p                 1.                 R_p
@@ -16,11 +16,11 @@ v_min               60.                 km s^-1
 v_max               600.                km s^-1
 Jet_model           #####            #####
 jet_type            simple_stellar_jet
-incl                70               degrees
-jet_angle           66                degrees
+incl                65               degrees
+jet_angle           60                degrees
 const_optical_depth 1.
-velocity_centre     822              km s^-1
-velocity_edge       10                km s^-1
+velocity_centre     800              km s^-1
+velocity_edge       1                km s^-1
 radius_primary_a1   0.65              a1
 radius_primary_au   0.21             AU
 T_eff               6250              K
@@ -69,7 +69,7 @@ r_Prim_max          1.5
 nwalkers            128
 niter               5000
 photospheric        0
-synthetic           06250_g+1.0_m10p00_hr_vsini10.txt
+synthetic           transposed.txt
 template            0
 previous_walkers_s  False
 previous_walkers_e  False

@@ -238,8 +238,8 @@ prob_interval_indices_d   = [[],[],[]]
 
 for (p,prob) in enumerate(probabilities_values):
 
-    prob_higher_indices = np.where(probabilities_temperature > prob)
-    prob_interval       = np.sum(probabilities_temperature[prob_higher_indices])
+    prob_higher_indices = np.where(probabilities_density > prob)
+    prob_interval       = np.sum(probabilities_density[prob_higher_indices])
 
     for (i,interval) in enumerate(interval_sigma):
 
@@ -284,7 +284,7 @@ std_temp_min = np.min(jet_temperatures[prob_interval_indices_T[2]]) - T_max
 std_temp_max = np.max(jet_temperatures[prob_interval_indices_T[2]]) - T_max
 print('mean temperature is ', T_max, 'standard deviation is ', std_temp_min, ' and ', std_temp_max)
 
-probabilities_density = np.sum(probabilities_normalised, axis=0)
+# probabilities_density = np.sum(probabilities_normalised, axis=0)
 mean_temperature = np.sum(jet_temperatures*probabilities_temperature)
 mean_density = np.sum(jet_density_log*probabilities_density)
 
