@@ -106,12 +106,14 @@ for line in balmer_lines:
     with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_init_'+line+'.txt', 'rb') as f:
         spectra_background[line]  = pickle.load(f)
 
-phases  = list()
-spectra = list()
+phases     = list()
+phases_all = list()
+spectra    = list()
 for ph in spectra_observed['halpha'].keys():
     phases.append(ph)
     for spec in spectra_observed['halpha'][ph].keys():
         spectra.append(spec)
+        phases_all.append(ph)
 
 ###### The correct intensity level of the spectra from the       ###############
 ###### synthetic spectra. We fit a straight line to the relevant ###############
@@ -195,7 +197,7 @@ for line in balmer_lines:
         signal_to_noise[title] = value
     f_snr.close()
 
-    if line == 'halpha':
+    if line == 'halpha' and object_id=='IRAS19135+3937':
         with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
             uncertainty_background = pickle.load(f)
 
@@ -211,8 +213,8 @@ for line in balmer_lines:
     else:
         for ph in phases:
             standard_deviation[line][ph] = {}
-            for spec in spectra_observed[line][ph]:
-                standard_deviation[line][ph][spec] = \
+            for spectrum in spectra_observed[line][ph]:
+                standard_deviation[line][ph][spectrum] = \
                             1./signal_to_noise[spectrum]
 
 
@@ -284,6 +286,10 @@ if object_id=='IRAS19135+3937':
     # phases_zero = [11, 14, 22, 74, 82, 94, 98, 99]
     phases_zero = [74, 82, 94, 98, 99]
 
+if object_id=='BD+46_442':
+
+    phases_zero = [1, 4, 5, 86, 88, 91, 94, 96]
+
 EW_zero = {line: 0 for line in balmer_lines}
 for line in balmer_lines:
     for phase in phases_zero:
@@ -336,7 +342,8 @@ for jet_temperature in jet_temperatures:
         OutputDirTempRho = '%.0f_%.2e' % (jet_temperature,jet_density_max)
         OutputEW.write('\n %.0f\t%.2e\t' % (jet_temperature,jet_density_max))
 
-        # fig, axes = plt.subplots(2,2)
+        if jet_temperature > 5100:
+            fig, axes = plt.subplots(2,2)
         EW_model = {line:[] for line in balmer_lines}
 
         for line in balmer_lines:
@@ -355,25 +362,27 @@ for jet_temperature in jet_temperatures:
                                                     wave_max=1e10*(balmer_properties['wavelength'][line] + 1*range_EW_calculation_angstrom[line]))
 
                     EW_model[line].append(EW_line)
-                    # axes[numbers[line][0], numbers[line][1]].scatter(phase,EW_observations[line][phase][spectrum]['values'],color=colors[line])
-                    # axes[numbers[line][0], numbers[line][1]].errorbar(phase,EW_observations[line][phase][spectrum]['values'], yerr=EW_observations[line][phase][spectrum]['uncertainty'],color=colors[line])
+                    if jet_temperature > 5100:
+                        axes[numbers[line][0], numbers[line][1]].scatter(phase,EW_observations[line][phase][spectrum]['values'],color=colors[line])
+                        axes[numbers[line][0], numbers[line][1]].errorbar(phase,EW_observations[line][phase][spectrum]['values'], yerr=EW_observations[line][phase][spectrum]['uncertainty'],color=colors[line])
 
                     chi_squared_grid[jet_temperature][jet_density_max] += (EW_line - EW_observations[line][phase][spectrum]['values'])**2 / EW_observations[line][phase][spectrum]['uncertainty']**2
-
-            # axes[numbers[line][0], numbers[line][1]].plot(phases,EW_model[line], color=colors[line])
+            if jet_temperature > 5100:
+                axes[numbers[line][0], numbers[line][1]].plot(phases_all,EW_model[line], color=colors[line])
 
         OutputEW.write('%.4f' % chi_squared_grid[jet_temperature][jet_density_max])
 
         #
-        # axes[0,0].axhline(0)
-        # axes[0,0].axhline(1)
-        # axes[0,1].axhline(0)
-        # axes[0,1].axhline(1)
-        # axes[1,0].axhline(0)
-        # axes[1,0].axhline(1)
-        # axes[1,1].axhline(0)
-        # axes[1,1].axhline(1)
-        # plt.show()
+        if jet_temperature > 5100:
+            axes[0,0].axhline(0)
+            axes[0,0].axhline(1)
+            axes[0,1].axhline(0)
+            axes[0,1].axhline(1)
+            axes[1,0].axhline(0)
+            axes[1,0].axhline(1)
+            axes[1,1].axhline(0)
+            axes[1,1].axhline(1)
+            plt.show()
 OutputEW.close()
 
 

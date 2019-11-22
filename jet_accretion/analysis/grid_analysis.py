@@ -166,8 +166,8 @@ for (p,prob) in enumerate(probabilities_values):
 
 fig, axes = plt.subplots(ncols=1, nrows=1, figsize=(6, 5))
 im2   = axes.pcolormesh(xi,yi, probabilities_normalised.reshape(xi.shape), shading='gouraud', cmap=plot_color)
-cont2 = axes.contour(xi,yi, probabilities_normalised.reshape(xi.shape),  prob_interval_value)
-axes.clabel(cont2, inline=True, fontsize=10)
+# cont2 = axes.contour(xi,yi, probabilities_normalised.reshape(xi.shape),  prob_interval_value)
+# axes.clabel(cont2, inline=True, fontsize=10)
 axes.set_xlabel(r'Temperature (K)')
 axes.set_ylabel(r'log(density) ($\log$(m$^{-3}$))')
 fig.colorbar(im2, label='probability', ax=axes)

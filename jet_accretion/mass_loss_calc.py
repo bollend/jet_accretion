@@ -67,10 +67,15 @@ for l in lines:
 jet_angle                 = eval(parameters['jet_angle']) * degr_to_rad # radians
 velocity_centre           = eval(parameters['velocity_centre'])         # km/s
 velocity_edge             = eval(parameters['velocity_edge'])           # km/s
+jet_cavity_angle          = eval(parameters['jet_cavity_angle'])* degr_to_rad
+exp_velocity              = eval(parameters['exp_velocity'])
+power_density             = eval(parameters['c_den'])
+power_velocity            = eval(parameters['c_vel'])
+
 jet_type                  = parameters['jet_type']
 jet_velocity_max          = 1000 * velocity_centre                      # m/s
 jet_velocity_min          = 1000 * velocity_edge                        # m/s
-jet_density_max           = 3e15                                        # m^-3
+jet_density_max           = 3.98e16                                       # m^-3
 jet_density_max_kg_per_m3 = jet_density_max                             # kg/m^3
 
 
@@ -102,7 +107,7 @@ if jet_type=="simple_stellar_jet":
     radius = np.linspace(0, height_0_m*np.tan(jet_angle)+1, number_radii)
     radius_max = height_0_m*np.tan(jet_angle)
     density = jet_density_max * (np.arctan(radius/height_0_m)/ np.arctan(radius_max/height_0_m))**8
-    velocity = jet_velocity_max + (jet_velocity_min - jet_velocity_max)*(np.arctan(radius/height_0_m)/ np.arctan(radius_max/height_0_m))**.1
+    velocity = jet_velocity_max + (jet_velocity_min - jet_velocity_max)*(np.arctan(radius/height_0_m)/ np.arctan(radius_max/height_0_m))**2
 
     plt.plot(np.arctan(radius/height_0_m)*180./np.pi, velocity/np.max(velocity))
     plt.plot(np.arctan(radius/height_0_m)*180./np.pi, density/np.max(density))
@@ -126,6 +131,32 @@ if jet_type=="simple_stellar_jet":
     velocity = jet_velocity_min + (jet_velocity_max - jet_velocity_min) * factor
 
     plt.plot(np.arctan(radius/height_0_m)*180./np.pi, velocity)
+    plt.show()
+    masslosses = M_sol**-1 * year * m_p * density * velocity * 2.* np.pi * radius * radius_max / number_radii
+    print(np.sum(masslosses))
+
+
+if jet_type=="stellar_jet":
+    number_radii = 10000
+    radius = np.linspace(0, height_0_m*np.tan(jet_angle)+1, number_radii)
+    radius_max = height_0_m*np.tan(jet_angle)
+
+    radius = np.linspace(0, height_0_m*np.tan(jet_angle)+1, number_radii)
+    angles = np.arctan(radius/height_0_m)
+    density = np.zeros(number_radii)
+    velocity = np.zeros(number_radii)
+    indices = np.where(angles > jet_cavity_angle)
+    density[indices] = jet_density_max * (angles[indices]/jet_angle)**power_density
+
+    e_exponent          = np.exp(exp_velocity)
+    exp_angles = np.abs(angles[indices] / jet_angle)**power_velocity
+
+    factor = ( e_exponent**-(exp_angles) - e_exponent**-1 )\
+             / ( 1 - e_exponent**-1 )
+
+    velocity[indices] = jet_velocity_min + (jet_velocity_max - jet_velocity_min) * factor
+
+    plt.plot(np.arctan(radius/height_0_m)*180./np.pi, density)
     plt.show()
     masslosses = M_sol**-1 * year * m_p * density * velocity * 2.* np.pi * radius * radius_max / number_radii
     print(np.sum(masslosses))

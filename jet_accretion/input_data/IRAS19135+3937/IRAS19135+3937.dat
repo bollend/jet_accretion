@@ -20,6 +20,8 @@ Jet_model           #####            #####
 jet_type            simple_stellar_jet
 incl                67.76               degrees
 jet_angle           67.44                degrees
+jet_cavity_angle    0
+jet_tilt            0
 const_optical_depth 0.75
 velocity_centre     822              km s^-1
 velocity_edge       21                km s^-1
@@ -29,6 +31,7 @@ T_eff               6250              K
 phi                 0.                degrees
 c_vel               2
 c_den               8
+exp_velocity        -1
 T_min               5000              Kelvin
 T_max               6000              Kelvin
 T_step              500               Kelvin

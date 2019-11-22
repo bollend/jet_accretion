@@ -118,6 +118,9 @@ synthetic           = parameters['synthetic']
 jet_type            = parameters['jet_type']                     # None
 inclination         = eval(parameters['incl']) * degr_to_rad     # radians
 jet_angle           = eval(parameters['jet_angle']) * degr_to_rad# radians
+jet_cavity_angle    = eval(parameters['jet_cavity_angle'])*degr_to_rad
+jet_tilt            = eval(parameters['jet_tilt'])*degr_to_rad
+exp_velocity        = eval(parameters['exp_velocity'])
 const_optical_depth = eval(parameters['const_optical_depth'])    # None
 velocity_centre     = eval(parameters['velocity_centre'])        # km s^-1
 velocity_edge       = eval(parameters['velocity_edge'])          # km s^-1
@@ -243,7 +246,7 @@ for line in balmer_lines:
         signal_to_noise[title] = value
     f_snr.close()
 
-    if line == 'halpha':
+    if line == 'halpha' and object_id=='IRAS19135+3937':
         with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
             uncertainty_background = pickle.load(f)
 
@@ -259,8 +262,8 @@ for line in balmer_lines:
     else:
         for ph in phases:
             standard_deviation[line][ph] = {}
-            for spec in spectra_observed[line][ph]:
-                standard_deviation[line][ph][spec] = \
+            for spectrum in spectra_observed[line][ph]:
+                standard_deviation[line][ph][spectrum] = \
                             1./signal_to_noise[spectrum]
 
 """
@@ -323,9 +326,16 @@ Create the jet
 ==============
 """
 
-jet = Cone.Stellar_jet_simple(inclination, jet_angle,
-                              velocity_centre, velocity_edge,
-                              jet_type)
+jet = Cone.Stellar_jet(inclination,
+                       jet_angle,
+                       velocity_centre,
+                       velocity_edge,
+                       exp_velocity,
+                       power_density,
+                       jet_type,
+                       jet_tilt=jet_tilt,
+                       jet_cavity_angle=jet_cavity_angle
+                       )
 
 """
 ===========================================
@@ -531,6 +541,7 @@ def spectral_line_and_EW(pair):
         postAGB.centre      = primary_orbit[phase]['position']
         jet.jet_centre      = secondary_orbit[phase]['position']
         postAGB._set_grid_location()
+        jet._set_orientation(np.array([secondary_orbit[phase]['velocity']]))
 
         for spectrum in spectra_observed['halpha'][phase].keys():
             ###### Iterate over all spectra with this phase
@@ -556,7 +567,7 @@ def spectral_line_and_EW(pair):
                     jet._set_gridpoints_polar_angle()
 
                     ###### Jet velocity and density ########################
-                    jet_density_scaled      = jet.density(gridpoints_LOS, power_density)   # The scaled number density of the jet
+                    jet_density_scaled      = jet.density(gridpoints_LOS)   # The scaled number density of the jet
                     jet_density             = jet_density_scaled*jet_density_max   # The number density of the jet at each gridpoint (m^-3)
                     jet_velocity            = jet.poloidal_velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
                     jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, secondary_rad_vel) # Radial velocity of each gridpoint (km/s)
