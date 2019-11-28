@@ -1,8 +1,9 @@
 import numpy as np
 import sys
+sys.path.append('./tools')
 import os
 import argparse
-
+import parameters_DICT
 """
 ==================================================
 Command line input
@@ -24,25 +25,12 @@ datafile      = str(args.datafile)
 parameters = {}
 InputDir   = 'input_data/'+str(object_id)+'/'
 InputFile = datafile
-with open(InputDir+InputFile) as f:
-    lines  = f.readlines()[2:]
 
-for l in lines:
-    split_lines       = l.split()
-    title             = split_lines[0]
-    value             = split_lines[1]
-    parameters[title] = value
 
-###### Temperature and density grid ############################################
-T_min               = eval(parameters['T_min'])                 # Min temperature (K)
-T_max               = eval(parameters['T_max'])                 # Max temperature (K)
-T_step              = eval(parameters['T_step'])                # step temperature (K)
-density_log10_min   = eval(parameters['rho_min'])               # Minimum density (log10 m^-3)
-density_log10_max   = eval(parameters['rho_max'])               # Maximum density (log10 m^-3)
-density_log10_step  = eval(parameters['rho_step'])              # Step density (log10 m^-3)
+parameters = parameters_DICT.read_parameters(InputDir+InputFile)
 
-jet_temperatures = np.arange(T_min, T_max+1, T_step)
-jet_density_log  = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
+jet_temperatures = np.arange(parameters['OTHER']['T_min'], parameters['OTHER']['T_max']+1, parameters['OTHER']['T_step'])
+jet_density_log  = np.arange(parameters['OTHER']['density_log10_min'], parameters['OTHER']['density_log10_max']+0.001, parameters['OTHER']['density_log10_step'])
 jet_densities    = 10**(jet_density_log)
 
 n_t = len(jet_temperatures)
