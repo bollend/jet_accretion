@@ -1,0 +1,1316 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="149.42876mm"
+   height="98.84169mm"
+   viewBox="0 0 149.42876 98.841692"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="intensity_plotssvg.svg.2019_11_25_20_09_40.0.svg"
+   inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path840"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path822"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-7"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path840-7"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-7-6"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path840-7-2"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-9"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path840-9"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-1"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4563"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1102">
+      <rect
+         style="opacity:1;fill:#0000ff;fill-opacity:1;stroke:#ffffff;stroke-width:0.46499997;stroke-miterlimit:4;stroke-dasharray:0.92999999, 0.46499999;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect1104"
+         width="52.652084"
+         height="64.558327"
+         x="-75.794739"
+         y="191.19873" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1102-3">
+      <rect
+         style="opacity:1;fill:#0000ff;fill-opacity:1;stroke:#ffffff;stroke-width:0.46499997;stroke-miterlimit:4;stroke-dasharray:0.92999999, 0.46499999;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect1104-3"
+         width="52.652084"
+         height="64.558327"
+         x="-75.794739"
+         y="191.19873" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1102-7">
+      <rect
+         style="opacity:1;fill:#0000ff;fill-opacity:1;stroke:#ffffff;stroke-width:0.46499997;stroke-miterlimit:4;stroke-dasharray:0.92999999, 0.46499999;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect1104-6"
+         width="52.652084"
+         height="64.558327"
+         x="-75.794739"
+         y="191.19873" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath1102-3-8">
+      <rect
+         style="opacity:1;fill:#0000ff;fill-opacity:1;stroke:#ffffff;stroke-width:0.46499997;stroke-miterlimit:4;stroke-dasharray:0.92999999, 0.46499999;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect1104-3-9"
+         width="52.652084"
+         height="64.558327"
+         x="-75.794739"
+         y="191.19873" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2"
+     inkscape:cx="341.13201"
+     inkscape:cy="-349.94391"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1680"
+     inkscape:window-height="1021"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-25.540689,-65.369538)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 47.841238,140.64732 48.10852,65.811857"
+       id="path1123"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_2.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend-7)"
+       d="M 47.841238,140.64732 174.52715,140.45079"
+       id="path1123-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="100"
+       inkscape:export-ydpi="100"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_2.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend-9)"
+       d="m 52.501857,284.789 0.26729,-74.83546"
+       id="path1123-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend-7-6)"
+       d="M 52.501857,284.789 179.18777,284.59247"
+       id="path1123-6-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 59.985417,284.6058 v 2.47808"
+       id="path2734-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 66.667157,284.57847 v 2.47808"
+       id="path2734-4-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 72.947987,284.6878 v 2.47808"
+       id="path2734-3-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 79.629727,284.63314 v 2.47808"
+       id="path2734-4-0-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 86.311467,284.57589 v 2.47807"
+       id="path2734-4-9-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 92.592297,284.68521 v 2.47808"
+       id="path2734-3-2-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 98.990557,284.60349 v 2.47808"
+       id="path2734-4-0-5-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 98.990557,284.60349 v 2.47808"
+       id="path2734-40-03"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 105.67229,284.67638 v 2.47807"
+       id="path2734-4-5-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 111.95313,284.63754 v 2.47807"
+       id="path2734-3-9-19"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 118.63487,284.5687 -1e-5,2.47807"
+       id="path2734-30-6-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 125.3166,284.57716 v 2.47808"
+       id="path2734-4-9-9-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 131.59744,284.5512 v 2.47808"
+       id="path2734-3-2-2-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 137.9957,284.57255 v 2.47808"
+       id="path2734-4-0-5-2-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 137.9957,284.57255 v 2.47808"
+       id="path2734-3-9-4-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 144.67744,284.50371 -1e-5,2.47808"
+       id="path2734-30-6-7-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 151.35917,284.51218 v 2.47807"
+       id="path2734-4-9-9-7-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 157.64001,284.48622 v 2.47808"
+       id="path2734-3-2-2-5-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 164.03827,284.50757 v 2.47807"
+       id="path2734-4-0-5-2-4-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.023777,279.97815 h 2.47808"
+       id="path2734-8-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 49.996447,273.29641 h 2.47808"
+       id="path2734-4-1-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.105777,267.01558 h 2.47808"
+       id="path2734-3-28-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.051117,260.33384 h 2.47808"
+       id="path2734-4-0-9-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 49.993867,253.6521 h 2.47807"
+       id="path2734-4-9-3-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.103187,247.37126 h 2.47808"
+       id="path2734-3-2-6-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.021467,240.97301 h 2.47808"
+       id="path2734-4-0-5-8-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.25815749px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 48.173967,240.97301 h 4.32558"
+       id="path2734-40-0-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.094357,234.29127 h 2.47807"
+       id="path2734-4-5-2-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 50.055517,228.01043 h 2.47807"
+       id="path2734-3-9-1-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 49.986677,221.32869 2.47807,1e-5"
+       id="path2734-30-6-0-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.19539803px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 49.995137,214.64696 h 2.47808"
+       id="path2734-4-9-9-5-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2925-7"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.00343081,-0.26456109,0.26456109,0.00343081,-60.614383,274.64762)"
+       inkscape:transform-center-x="-3.4745039"
+       inkscape:transform-center-y="-9.8889725"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"><flowRegion
+         id="flowRegion2927-2"><rect
+           id="rect2929-8"
+           width="177.81235"
+           height="56.568489"
+           x="28.284271"
+           y="336.621"
+           ry="0" /></flowRegion><flowPara
+         id="flowPara2931-2">Intensity</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2933-9"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,17.756828,153.76338)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"><flowRegion
+         id="flowRegion2935-9"><rect
+           id="rect2937-6"
+           width="244.96196"
+           height="53.645966"
+           x="258.09396"
+           y="540.5639" /></flowRegion><flowPara
+         id="flowPara2939-0">Wavelength</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:0.56500006;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 52.499547,240.97301 c 115.195483,0 117.066373,0 117.066373,0"
+       id="path2941-2"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2943-7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.33333397px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,7.0418717,145.99376)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"><flowRegion
+         id="flowRegion2945-6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.33333397px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start"><rect
+           id="rect2947-1"
+           width="36.751438"
+           height="49.639359"
+           x="135"
+           y="340.51968"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:29.33333397px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara2951-3">1</flowPara></flowRoot>    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.20346682;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect5444"
+       width="219.06451"
+       height="132.13782"
+       x="-7.2852139"
+       y="-89.320526"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.32626629px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 65.658585,-83.028175 62.922835,98.346171 2.79659,3.72568"
+       id="path4518"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.32626629px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 197.09727,-83.028175 -62.92274,98.346171 -2.7966,3.72568"
+       id="path4518-8"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <path
+       style="opacity:1;fill:#ffdd55;fill-opacity:1;stroke:none;stroke-width:0.93841374;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.58859873;stroke-opacity:1"
+       id="path4535"
+       sodipodi:type="arc"
+       sodipodi:cx="17.438433"
+       sodipodi:cy="17.880463"
+       sodipodi:rx="19.109879"
+       sodipodi:ry="19.342928"
+       sodipodi:start="0"
+       sodipodi:end="6.1772962"
+       sodipodi:open="true"
+       d="M 36.548311,17.880463 A 19.109879,19.342928 0 0 1 17.944256,37.216613 19.109879,19.342928 0 0 1 -1.6446684,18.904087 19.109879,19.342928 0 0 1 15.922382,-1.4014991 19.109879,19.342928 0 0 1 36.441277,15.836083"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.32677987;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 20.265213,11.535536 81.981837,-37.70041"
+       id="path4537"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.32677987;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend-1)"
+       d="m 184.65051,-63.616795 22.93392,-10.32245"
+       id="path4537-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="102.10867"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4"
+       width="2.3304732"
+       height="2.3304732"
+       x="104.43916"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="106.76964"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-2"
+       width="2.3304732"
+       height="2.3304732"
+       x="109.10012"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-5"
+       width="2.3304732"
+       height="2.3304732"
+       x="111.4306"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-8"
+       width="2.3304732"
+       height="2.3304732"
+       x="113.76107"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="116.09152"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-9"
+       width="2.3304732"
+       height="2.3304732"
+       x="118.422"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-0"
+       width="2.3304732"
+       height="2.3304732"
+       x="120.75248"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-81"
+       width="2.3304732"
+       height="2.3304732"
+       x="123.08296"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-3"
+       width="2.3304732"
+       height="2.3304732"
+       x="125.41341"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-2-1"
+       width="2.3304732"
+       height="2.3304732"
+       x="127.74389"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-5-1"
+       width="2.3304732"
+       height="2.3304732"
+       x="130.07437"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-8-0"
+       width="2.3304732"
+       height="2.3304732"
+       x="132.40485"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-6-3"
+       width="2.3304732"
+       height="2.3304732"
+       x="134.73529"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-4"
+       width="2.3304732"
+       height="2.3304732"
+       x="137.06578"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-03"
+       width="2.3304732"
+       height="2.3304732"
+       x="139.39627"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-9"
+       width="2.3304732"
+       height="2.3304732"
+       x="141.72673"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-1"
+       width="2.3304732"
+       height="2.3304732"
+       x="144.05722"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-2-9"
+       width="2.3304732"
+       height="2.3304732"
+       x="146.38768"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-5-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="148.71812"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-8-9"
+       width="2.3304732"
+       height="2.3304732"
+       x="151.0486"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-6-33"
+       width="2.3304732"
+       height="2.3304732"
+       x="153.37909"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-9-8"
+       width="2.3304732"
+       height="2.3304732"
+       x="155.70958"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-0-0"
+       width="2.3304732"
+       height="2.3304732"
+       x="158.04004"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-81-5"
+       width="2.3304732"
+       height="2.3304732"
+       x="160.37053"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-3-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="162.701"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-2-1-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="165.03146"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-5-1-4"
+       width="2.3304732"
+       height="2.3304732"
+       x="167.36195"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-8-0-0"
+       width="2.3304732"
+       height="2.3304732"
+       x="169.6924"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-6-3-0"
+       width="2.3304732"
+       height="2.3304732"
+       x="172.02284"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-6-33-4"
+       width="2.3304732"
+       height="2.3304732"
+       x="174.35338"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-9-8-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="176.68382"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-0-0-2"
+       width="2.3304732"
+       height="2.3304732"
+       x="179.01428"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-81-5-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="181.3448"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-3-6-7"
+       width="2.3304732"
+       height="2.3304732"
+       x="183.67526"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-2-1-6-5"
+       width="2.3304732"
+       height="2.3304732"
+       x="186.00572"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-5-1-4-6"
+       width="2.3304732"
+       height="2.3304732"
+       x="188.33621"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-8-0-0-9"
+       width="2.3304732"
+       height="2.3304732"
+       x="190.66667"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.32677987;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4842-6-4-6-6-3-0-8"
+       width="2.3304732"
+       height="2.3304732"
+       x="192.99712"
+       y="16.772955"
+       transform="rotate(-24.251095)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.20346682;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 99.987317,-26.647014 -15.28024,-4.32368"
+       id="path5156"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.83038855px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.09750517"
+       x="75.672585"
+       y="3.3746841"
+       id="text5146-7-6"
+       transform="rotate(-24.369237)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png"><tspan
+         sodipodi:role="line"
+         id="tspan1210"
+         x="75.672585"
+         y="3.3746841"
+         style="stroke-width:0.09750517">ρ0, v0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.83038855px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.09750517"
+       x="108.99886"
+       y="4.4470305"
+       id="text5146-7-6-6"
+       transform="rotate(-24.369237)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png"><tspan
+         sodipodi:role="line"
+         id="tspan1210-2"
+         x="108.99886"
+         y="4.4470305"
+         style="stroke-width:0.09750517">ρ1, v1</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.20346682;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 103.08776,-28.050625 9.59059,-15.43618"
+       id="path5156-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.83038855px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.09750517"
+       x="136.45782"
+       y="5.0239811"
+       id="text5146-7-6-6-7"
+       transform="rotate(-24.369237)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png"><tspan
+         sodipodi:role="line"
+         id="tspan1210-2-9"
+         x="136.45782"
+         y="5.0239811"
+         style="stroke-width:0.09750517">...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.83038855px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.09750517"
+       x="181.99719"
+       y="8.3695917"
+       id="text5146-7-6-6-3"
+       transform="rotate(-24.369237)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png"><tspan
+         sodipodi:role="line"
+         id="tspan1210-2-92"
+         x="181.99719"
+         y="8.3695917"
+         style="stroke-width:0.09750517">ρn, vn</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.20346682;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 177.00306,-68.932971 7.04151,4.32506"
+       id="path5156-4-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.83038855px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.09750517"
+       x="-131.26883"
+       y="268.80121"
+       id="text5146-7-6-8"
+       transform="rotate(-24.369237)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/rtnum_1.png"><tspan
+         sodipodi:role="line"
+         id="tspan1210-8"
+         x="-131.26883"
+         y="268.80121"
+         style="stroke-width:0.09750517">ρ0, v0</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot983"
+       style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion985"><rect
+           id="rect987"
+           width="130.40179"
+           height="40.4795"
+           x="326.59821"
+           y="838.0954" /></flowRegion><flowPara
+         id="flowPara989" /></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111111px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.09750517;"
+       x="110.64293"
+       y="293.69757"
+       id="text5146-7-6-8-3"
+       transform="rotate(0.6923392)"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"><tspan
+         sodipodi:role="line"
+         id="tspan1210-8-3"
+         x="110.64293"
+         y="293.69757"
+         style="stroke-width:0.09750517;-inkscape-font-specification:'sans-serif, Normal';font-family:sans-serif;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:7.76111111px;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;">λ0</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot989"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.26458333,0,0,0.26458333,25.540689,65.369538)"><flowRegion
+         id="flowRegion991"><rect
+           id="rect993"
+           width="70.822807"
+           height="41.289505"
+           x="179.17719"
+           y="838.2854" /></flowRegion><flowPara
+         id="flowPara995">λ</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.76111126px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="139.57611"
+       y="294.91541"
+       id="text999"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300"><tspan
+         sodipodi:role="line"
+         x="139.57611"
+         y="294.91541"
+         id="tspan1003">λ(ρn)</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.465;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.93, 0.465;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 151.35917,284.51218 V 240.55485"
+       id="path1007"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300" />
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.46499997;stroke-miterlimit:4;stroke-dasharray:0.92999999, 0.46499999;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect1050"
+       width="67.73333"
+       height="58.208332"
+       x="-111.77806"
+       y="281.42163" />
+    <g
+       id="g1139">
+      <g
+         clip-path="url(#clipPath1102)"
+         transform="translate(-47.889589,-42.333339)"
+         id="g1019">
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m -75.794726,255.75706 c 23.547916,0 25.929166,-12.43542 32.808333,-26.9875 6.879166,-14.55208 16.668749,-57.94375 28.839582,-26.45833 12.1708337,31.48541 3.704167,44.45 18.7854169,48.94791"
+           id="path1013"
+           inkscape:connector-curvature="0" />
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:0.93, 0.465;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect1015"
+           width="28.045834"
+           height="64.822914"
+           x="-23.142643"
+           y="191.19873" />
+      </g>
+      <g
+         clip-path="url(#clipPath1102-3)"
+         transform="matrix(-1,0,0,1,-94.174886,-42.333339)"
+         id="g1019-8">
+        <path
+           style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m -75.794726,255.75706 c 23.547916,0 25.929166,-12.43542 32.808333,-26.9875 6.879166,-14.55208 16.668749,-57.94375 28.839582,-26.45833 12.1708337,31.48541 3.704167,44.45 18.7854169,48.94791"
+           id="path1013-0"
+           inkscape:connector-curvature="0" />
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.465;stroke-miterlimit:4;stroke-dasharray:0.93, 0.465;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect1015-4"
+           width="28.045834"
+           height="64.822914"
+           x="-23.142643"
+           y="191.19873" />
+      </g>
+    </g>
+    <g
+       transform="matrix(0.14572855,0,0,-0.14572855,162.74157,281.73818)"
+       id="g1139-0"
+       style="stroke-width:2.05862212;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="/lhome/dylanb/astronomy/hemp/hemp191125/intensity_4.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
+      <g
+         clip-path="url(#clipPath1102-7)"
+         transform="matrix(1,0,0,0.55063098,-56.059745,46.269742)"
+         id="g1019-6"
+         style="stroke-width:2.05862212;stroke-miterlimit:4;stroke-dasharray:none">
+        <path
+           style="fill:none;stroke:#000000;stroke-width:2.05862212;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m -75.794726,255.75706 c 23.547916,0 25.929166,-12.43542 32.808333,-26.9875 6.879166,-14.55208 16.668749,-57.94375 28.839582,-26.45833 12.1708337,31.48541 3.704167,44.45 18.7854169,48.94791"
+           id="path1013-8"
+           inkscape:connector-curvature="0" />
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.05862212;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect1015-7"
+           width="28.045834"
+           height="64.822914"
+           x="-23.142643"
+           y="191.19873" />
+      </g>
+      <g
+         clip-path="url(#clipPath1102-3-8)"
+         transform="matrix(-1,0,0,1.2106417,-102.34504,-79.866061)"
+         id="g1019-8-9"
+         style="stroke-width:2.05862212;stroke-miterlimit:4;stroke-dasharray:none">
+        <path
+           style="fill:none;stroke:#000000;stroke-width:2.05862212;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m -75.794726,255.75706 c 23.547916,0 25.929166,-12.43542 32.808333,-26.9875 6.879166,-14.55208 16.668749,-57.94375 28.839582,-26.45833 12.1708337,31.48541 3.704167,44.45 18.7854169,48.94791"
+           id="path1013-0-0"
+           inkscape:connector-curvature="0" />
+        <rect
+           style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.05862212;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect1015-4-3"
+           width="28.045834"
+           height="64.822914"
+           x="-23.142643"
+           y="191.19873" />
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 57.555272,241.07268 c 26.590625,15.74271 10.054166,28.7073 31.353125,31.75 21.298953,3.04271 23.151043,-10.45104 40.745833,-8.99583 17.59479,1.45521 8.46667,-10.18646 21.43125,-13.36146 12.96458,-3.175 8.73125,-6.74687 15.08125,-7.9375 6.35,-1.19062 3.39919,-1.55488 3.39919,-1.55488 v 0"
+       id="path1188"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

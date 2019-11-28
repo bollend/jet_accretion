@@ -137,7 +137,7 @@ Stellar spectra
 
 ###### Observed spectra, background spectra, and wavelength region #############
 spectrum_test = '416105'
-phase_test    = 45
+phase_test    = 30
 with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_observed_'+line+'.txt', 'rb') as f:
     spectra_observed    = pickle.load(f)
 with open('../jet_accretion/input_data/'+object_id+'/halpha/'+object_id+'_wavelength_'+line+'.txt', 'rb') as f:
@@ -168,7 +168,6 @@ for ph in phases:
     spectra_background_I[ph] = {}
     spectra_observed_I[ph]   = {}
     for spec in spectra_observed[ph].keys():
-        print('specsynwav', len(spectra_synth_wavelengths), 'specsyntI', len(spectra_synth_I), 'specwav', len(spectra_wavelengths), 'specback', len(spectra_background[ph][spec]))
         spectra_background_I[ph][spec], scaling_interpolation = scale_intensity.scale_intensity(wave_0[line],
                                          spectra_synth_wavelengths,
                                          spectra_synth_I, spectra_wavelengths,
@@ -248,7 +247,7 @@ jet = Cone.Stellar_jet_simple(inclination, jet_angle,
                               jet_type,
                               jet_centre=secondary_orbit[phase_test]['position'])
 jet_temperature         = 5400      # The jet temperature (K)
-jet_density_max         = 1.e25      # The jet number density at its outer edge (m^-3)
+jet_density_max         = 2.e15      # The jet number density at its outer edge (m^-3)
 
 jet_thermal_velocity    = ( 2 * constants.k * jet_temperature / constants.m_p)**.5 # The jet thermal velocity (m/s)
 jet_frequency_0         = constants.c / balmer_properties['wavelength'][line]
@@ -408,7 +407,7 @@ for phase in phases:
         ax.set_xlim([6550,6575])
 
         ax.set_ylim([0, 5.1e13])
-        plt.savefig('../docs/output_tests/IRAS19135+3937/IRAS19135+3937_'+str(phase)+'_'+spectrum+'.png')
+        plt.savefig('../docs/output_tests/'+object_id+'/'+object_id+'_'+str(phase)+'_'+spectrum+'.png')
 
 
 
