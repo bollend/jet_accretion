@@ -1,0 +1,88 @@
+parameter           value              dimension
+------------------------------------------------------------
+GROUP               MODEL
+inclination                                   radians
+min               0.872               FLOAT   50.
+max               1.553               FLOAT   89.
+jet_angle                                     radians
+min               0.782               FLOAT   40.
+max               1.483               FLOAT   85.
+jet_cavity_angle                              radians
+min               0.                  FLOAT   0.
+max               0.785               FLOAT   45.
+jet_tilt                                      radians
+min               0.                  FLOAT   0.
+max               0.174               FLOAT   10.
+velocity_max                                  km/s
+min               400.                FLOAT
+max               1400.               FLOAT
+velocity_edge                                 km/s
+min               0.1                 FLOAT
+max               150.                FLOAT
+exp_velocity
+min               -2.                FLOAT
+max               10.                 FLOAT
+power_density
+min               0.                  FLOAT
+max               15                  FLOAT
+c_optical_depth
+min               0.                  FLOAT
+max               6.                 FLOAT
+primary_radius                                  AU
+min               0                   FLOAT
+max               2                   FLOAT
+GROUP               BINARY
+period              127.08            FLOAT     days
+T0                  2454997.8         FLOAT     BJD
+omega               66.               FLOAT     degrees
+mass_function       0.07              FLOAT     M_sol
+ecc                 0.14              FLOAT
+primary_asini       0.20              FLOAT     AU
+gamma               1.3               FLOAT     km s^-1
+primary_rad_vel     17.71             FLOAT     km s^-1
+primary_mass        0.6               FLOAT     M_sol
+primary_sma         1.                FLOAT     R_p
+primary_Teff        6250              FLOAT     K
+GROUP               OTHER
+jet_type            stellar_jet       STRING
+object_id           IRAS19135+3937    STRING
+gridpoints_LOS      2001               INT
+gridpoints_primary  50                INT
+n_walkers           64               INT
+n_iter              5000              INT
+photospheric        '6000_10_m10p00'  STRING
+synthetic           06250_g+1.0_m10p00_hr_vsini10.txt    STRING
+template            interp2         STRING
+power_velocity      2                 INT
+wave_center         6562.82           FLOAT
+wave_begin          6547.5            FLOAT
+wave_end            6567.             FLOAT
+wavelength_bins     801               INT
+velocity_range      2000.             FLOAT
+photospheric        0                 INT
+template            0                 INT
+dir_previous_chain  output_15         STRING
+T_min               4000              FLOAT
+T_max               6000              FLOAT
+T_step              250               FLOAT
+density_log10_min             14                FLOAT
+density_log10_max             17                FLOAT
+density_log10_step            2                 FLOAT
+uncertainty_back    True              BOOL
+cut_waveregion      True              BOOL
+previous_chain      False             BOOL
+tilt                True              BOOL
+double_tilt         False             BOOL
+FINISH
+GROUP               BESTFIT
+inclination         69             FLOAT           radians
+jet_angle           63.             FLOAT           radians
+jet_cavity_angle    17.             FLOAT           radians
+jet_tilt            5.3             FLOAT           radians
+velocity_max        1050               FLOAT           km/s
+velocity_edge       8              FLOAT           km/s
+exp_velocity        0.28              FLOAT
+power_density       13               FLOAT
+c_optical_depth     1.4      FLOAT
+primary_radius      0.106              FLOAT            AU
+FINISHMODEL

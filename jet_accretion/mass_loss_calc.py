@@ -75,7 +75,7 @@ power_velocity            = eval(parameters['c_vel'])
 jet_type                  = parameters['jet_type']
 jet_velocity_max          = 1000 * velocity_centre                      # m/s
 jet_velocity_min          = 1000 * velocity_edge                        # m/s
-jet_density_max           = 3.98e16                                       # m^-3
+jet_density_max           = 6.3e15#5.012e15                                       # m^-3
 jet_density_max_kg_per_m3 = jet_density_max                             # kg/m^3
 
 
@@ -88,8 +88,8 @@ def func_1(x):
 def func_2(x):
     return np.arctan(x)**10 * x
 
-I_int  = integrate.quad(func_1, 0*np.tan(50/180*np.pi) , np.tan(jet_angle))
-II_int = integrate.quad(func_2, 0*np.tan(50/180*np.pi) , np.tan(jet_angle))
+I_int  = integrate.quad(func_1, 0*np.tan(40/180*np.pi) , np.tan(jet_angle))
+II_int = integrate.quad(func_2, 0*np.tan(40/180*np.pi) , np.tan(jet_angle))
 
 jet_mass_loss_particle_per_s = 2. * np.pi * jet_density_max_kg_per_m3\
                 * height_0_m**2 * jet_angle**-8\

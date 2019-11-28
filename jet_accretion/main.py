@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/lhome/dylanb/astronomy/MCMC_main/MCMC_main')
 sys.path.append('/lhome/dylanb/astronomy/jet_accretion/jet_accretion')
+sys.path.append('./tools')
 import os
 import shutil
 import argparse
@@ -14,6 +15,10 @@ import ionisation_excitation as ie
 import radiative_transfer as rt
 import pickle
 import Cone
+import MCMC
+import parameters_DICT
+import eval_type
+import create_jet
 import geometry_binary
 import scale_intensity
 from radiative_transfer import *
@@ -45,9 +50,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-o', dest='object_id',
                     help='Object identifier')
 
+
+parser.add_argument('-dat', dest='datafile',
+                    help='data file with all the input parameters and specifics')
+
 args          = parser.parse_args()
 object_id     = args.object_id
-
+datafile      = str(args.datafile)
 """
 ==================================================
 Balmer line properties (ionisation and excitation)
@@ -82,68 +91,29 @@ days_to_sec     = 24*60*60      # 1day in seconds
 degr_to_rad     = np.pi/180.    # Degrees to radians
 
 ###### Read in the object specific and model parameters ########################
-parameters = {}
+
 InputDir   = 'input_data/'+str(object_id)+'/'
-InputFile = str(object_id)+'.dat'
-with open(InputDir+InputFile) as f:
-    lines  = f.readlines()[2:]
+InputFile  = datafile
 
-for l in lines:
-    split_lines       = l.split()
-    title             = split_lines[0]
-    value             = split_lines[1]
-    parameters[title] = value
+###### Create the parameter dictionary with all jet, binary, and model parameters
 
-###### Wavelength ##############################################################
-# central_wavelength  = eval(parameters['w_c_'+str(line)])            # (angstrom)
-# w_begin             = eval(parameters['w_begin_'+str(line)])*1e-10  # (angstrom)
-# w_end               = eval(parameters['w_end_'+str(line)])*1e-10    # (angstrom)
-###### Binary system and stellar parameters ####################################
-omega               = eval(parameters['omega'])    # Argument of periastron (degrees)
-ecc                 = eval(parameters['ecc'])      # Eccentricity
-T0                  = eval(parameters['T0'])       # Time of periastron (days)
-period              = eval(parameters['period'])   # period (days)
-primary_asini       = eval(parameters['asini'])    # asini of the primary (AU)
-primary_rad_vel     = eval(parameters['K_p'])      # Radial velocity primary (km s^-1)
-primary_sma         = eval(parameters['R_p'])      # SMA of the primary (a1)
-primary_mass        = eval(parameters['m_p'])	   # mass primary (M_sol)
-primary_Teff        = eval(parameters['T_eff'])    # Surface temperature of the primary (K)
-mass_function       = eval(parameters['fm'])       # mass function (AU)
-angular_frequency   = 2. * np.pi / period          # angular frequency (days^-1)
-gridpoints_LOS      = eval(parameters['points_pathlength']) # number of points along the path length trough the jet
-gridpoints_primary  = eval(parameters['points_primary'])    # number of points on the primary star
-synthetic           = parameters['synthetic']
-###### Jet model solution parameters ###########################################
-jet_type            = parameters['jet_type']                     # None
-inclination         = eval(parameters['incl']) * degr_to_rad     # radians
-jet_angle           = eval(parameters['jet_angle']) * degr_to_rad# radians
-jet_cavity_angle    = eval(parameters['jet_cavity_angle'])*degr_to_rad
-jet_tilt            = eval(parameters['jet_tilt'])*degr_to_rad
-exp_velocity        = eval(parameters['exp_velocity'])
-const_optical_depth = eval(parameters['const_optical_depth'])    # None
-velocity_centre     = eval(parameters['velocity_centre'])        # km s^-1
-velocity_edge       = eval(parameters['velocity_edge'])          # km s^-1
-primary_radius_a1   = eval(parameters['radius_primary_a1'])      # a1
-primary_radius_au   = eval(parameters['radius_primary_au'])      # AU
-power_density       = eval(parameters['c_den'])                  # None
-power_velocity      = eval(parameters['c_vel'])                  # None
+parameters = parameters_DICT.read_parameters(InputDir+InputFile)
+parameters['BINARY']['T_inf'] = geometry_binary.T0_to_IC(parameters['BINARY']['omega'],
+                                                         parameters['BINARY']['ecc'],
+                                                         parameters['BINARY']['period'],
+                                                         parameters['BINARY']['T0'])
 
-###### Binary system and stellar parameters from jet solution ##################
-primary_sma_AU      = primary_asini / np.sin(inclination) # SMA of the primary (AU)
-primary_max_vel     = primary_rad_vel / np.sin(inclination) # Orbital velocity (km/s)
-secondary_mass      = geometry_binary.calc_mass_sec(primary_mass, inclination, mass_function) # (AU)
-mass_ratio          = primary_mass / secondary_mass       # None
-secondary_sma_AU    = primary_sma_AU * mass_ratio         # SMA of the secondary (AU)
-secondary_rad_vel   = primary_rad_vel * mass_ratio        # Radial velocity secondary (km/s)
-secondary_max_vel   = primary_max_vel * mass_ratio        # Orbital velocity secondary (km/s)
-T_inf               = geometry_binary.T0_to_IC(omega, ecc, period, T0)
-###### Temperature and density grid ############################################
-T_min               = eval(parameters['T_min'])                 # Min temperature (K)
-T_max               = eval(parameters['T_max'])                 # Max temperature (K)
-T_step              = eval(parameters['T_step'])                # step temperature (K)
-density_log10_min   = eval(parameters['rho_min'])               # Minimum density (log10 m^-3)
-density_log10_max   = eval(parameters['rho_max'])               # Maximum density (log10 m^-3)
-density_log10_step  = eval(parameters['rho_step'])              # Step density (log10 m^-3)
+pars_model = parameters_DICT.read_model_parameters(InputDir+InputFile)
+
+pars_model_array = np.zeros( len(pars_model.keys()) )
+
+for n,param in enumerate(parameters['MODEL'].keys()):
+
+    parameters['MODEL'][param]['id'] = n
+    pars_model_array[n] = pars_model[param]
+
+pars_add   = MCMC.calc_additional_par(parameters, pars_model_array)
+
 
 """
 ===============
@@ -169,10 +139,13 @@ for line in balmer_lines:
 
 phases  = list()
 spectra = list()
-for ph in spectra_observed['halpha'].keys():
-    phases.append(ph)
-    for spec in spectra_observed['halpha'][ph].keys():
+phases_dict = {}
+for phase in spectra_observed['halpha'].keys():
+    phases.append(phase)
+    phases_dict[phase] = []
+    for spec in spectra_observed['halpha'][phase].keys():
         spectra.append(spec)
+        phases_dict[phase].append(spec)
 
 ###### The correct intensity level of the spectra from the       ###############
 ###### synthetic spectra. We fit a straight line to the relevant ###############
@@ -180,7 +153,7 @@ for ph in spectra_observed['halpha'].keys():
 ###### intensity and scale the other spectra accordingly.        ###############
 
 spectra_synth_wavelengths, spectra_synth_I = np.loadtxt(
-               '../jet_accretion/input_data/'+object_id+'/synthetic/'+synthetic)
+               '../jet_accretion/input_data/'+object_id+'/synthetic/'+parameters['OTHER']['synthetic'])
 spectra_synth_wavelengths *= 1e-9 # m
 spectra_synth_I           *= 1e-7*1e10*1e4 # W m-2 m-1 sr-1
 
@@ -195,33 +168,33 @@ for line in balmer_lines:
     spectra_background_I[line] = {}
     spectra_observed_I[line]   = {}
 
-    for ph in phases:
+    for phase in phases:
 
-        spectra_background_I[line][ph] = {}
-        spectra_observed_I[line][ph]   = {}
+        spectra_background_I[line][phase] = {}
+        spectra_observed_I[line][phase]   = {}
 
-        for spec in spectra_observed[line][ph]:
+        for spec in spectra_observed[line][phase]:
 
             # Correction in the normalisation of the spectra
             # if line=='hbeta':
-            #     spectra_observed[line][ph][spec] *= 0.94
+            #     spectra_observed[line][phase][spec] *= 0.94
             # if line=='hgamma':
-            #     spectra_observed[line][ph][spec] *= 1.00
+            #     spectra_observed[line][phase][spec] *= 1.00
             # if line=='hdelta':
-            #     spectra_observed[line][ph][spec] *= 0.9
+            #     spectra_observed[line][phase][spec] *= 0.9
             if created_interpol_normalisation[line]==True:
-                spectra_background_I[line][ph][spec] = spectra_background[line][ph][spec] * scaling_interpolation[line](spectra_wavelengths[line])
-                spectra_observed_I[line][ph][spec]   = spectra_observed[line][ph][spec] * scaling_interpolation[line](spectra_wavelengths[line])
+                spectra_background_I[line][phase][spec] = spectra_background[line][phase][spec] * scaling_interpolation[line](spectra_wavelengths[line])
+                spectra_observed_I[line][phase][spec]   = spectra_observed[line][phase][spec] * scaling_interpolation[line](spectra_wavelengths[line])
 
             else:
-                spectra_background_I[line][ph][spec], scaling_interpolation[line] = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
+                spectra_background_I[line][phase][spec], scaling_interpolation[line] = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
                                                  spectra_synth_wavelengths,
                                                  spectra_synth_I, spectra_wavelengths[line],
-                                                 spectra_background[line][ph][spec])
-                spectra_observed_I[line][ph][spec], scaling_interpolation[line]   = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
+                                                 spectra_background[line][phase][spec])
+                spectra_observed_I[line][phase][spec], scaling_interpolation[line]   = scale_intensity.scale_intensity(balmer_properties['wavelength'][line],
                                                  spectra_synth_wavelengths,
                                                  spectra_synth_I, spectra_wavelengths[line],
-                                                 spectra_observed[line][ph][spec])
+                                                 spectra_observed[line][phase][spec])
                 created_interpol_normalisation[line] = True
 # for line in balmer_lines:
 #     with open('input_data/IRAS19135+3937/'+line+'/IRAS19135+3937_observed_'+line+'_corrected.txt', 'wb') as f:
@@ -250,20 +223,20 @@ for line in balmer_lines:
         with open('../jet_accretion/input_data/'+object_id+'/'+line+'/'+object_id+'_stdev_init_'+str(line)+'.txt', 'rb') as f:
             uncertainty_background = pickle.load(f)
 
-        for ph in uncertainty_background:
-            standard_deviation[line][ph] = {}
-            for spectrum in uncertainty_background[ph]:
-                standard_deviation[line][ph][spectrum] = \
-                            2./signal_to_noise[spectrum] + uncertainty_background[ph][spectrum]
+        for phase in uncertainty_background:
+            standard_deviation[line][phase] = {}
+            for spectrum in uncertainty_background[phase]:
+                standard_deviation[line][phase][spectrum] = \
+                            2./signal_to_noise[spectrum] + uncertainty_background[phase][spectrum]
                             # Twice the uncertainty from S/N because the input spectrum is a subtraction between two spectra
                             # --> spec_tot = spec_1 - spec_2
                             # ----> delta_tot = delta_1 + delta_2
 
     else:
-        for ph in phases:
-            standard_deviation[line][ph] = {}
-            for spectrum in spectra_observed[line][ph]:
-                standard_deviation[line][ph][spectrum] = \
+        for phase in phases:
+            standard_deviation[line][phase] = {}
+            for spectrum in spectra_observed[line][phase]:
+                standard_deviation[line][phase][spectrum] = \
                             1./signal_to_noise[spectrum]
 
 """
@@ -276,11 +249,11 @@ Cut the wavelength region if necessary
 # wavmax = min(range(len(spectra_wavelengths)), key = lambda j: abs(spectra_wavelengths[j]- w_end))
 # spectra_wavelengths = spectra_wavelengths[wavmin:wavmax]
 #
-# for ph in spectra_observed:
-#     for spectrum in spectra_observed[ph]:
-#         spectra_observed[ph][spectrum]   = spectra_observed[ph][spectrum][wavmin:wavmax]
-#         spectra_background[ph][spectrum] = spectra_background[ph][spectrum][wavmin:wavmax]
-#         standard_deviation[ph][spectrum] = standard_deviation[ph][spectrum][wavmin:wavmax]
+# for phase in spectra_observed:
+#     for spectrum in spectra_observed[phase]:
+#         spectra_observed[phase][spectrum]   = spectra_observed[phase][spectrum][wavmin:wavmax]
+#         spectra_background[phase][spectrum] = spectra_background[phase][spectrum][wavmin:wavmax]
+#         standard_deviation[phase][spectrum] = standard_deviation[phase][spectrum][wavmin:wavmax]
 
 wavelength_bins     = {}
 wavelength_bin_size = {}
@@ -298,16 +271,23 @@ Create the binary orbit
 primary_orbit = {}
 secondary_orbit = {}
 
-for ph in phases:
+for phase in phases:
     prim_pos, sec_pos, prim_vel, sec_vel = geometry_binary.pos_vel_primary_secondary(
-                                           ph, period, omega, ecc, primary_sma_AU,
-                                           secondary_sma_AU, T_inf, T0)
-    primary_orbit[ph]               = {}
-    secondary_orbit[ph]             = {}
-    primary_orbit[ph]['position']   = prim_pos
-    primary_orbit[ph]['velocity']   = prim_vel
-    secondary_orbit[ph]['position'] = sec_pos
-    secondary_orbit[ph]['velocity'] = sec_vel
+                                       phase,
+                                       parameters['BINARY']['period'],
+                                       parameters['BINARY']['omega'],
+                                       parameters['BINARY']['ecc'],
+                                       pars_add['primary_sma_AU'],
+                                       pars_add['secondary_sma_AU'],
+                                       parameters['BINARY']['T_inf'],
+                                       parameters['BINARY']['T0'])
+
+    primary_orbit[phase]               = {}
+    secondary_orbit[phase]             = {}
+    primary_orbit[phase]['position']   = prim_pos
+    primary_orbit[phase]['velocity']   = prim_vel
+    secondary_orbit[phase]['position'] = sec_pos
+    secondary_orbit[phase]['velocity'] = sec_vel
 
 """
 ==========================================
@@ -316,7 +296,11 @@ Create post-AGB star with a Fibonacci grid
 """
 
 import Star
-postAGB = Star.Star(primary_radius_au, np.array([0,0,0]), inclination, gridpoints_primary)
+postAGB = Star.Star(pars_model_array[parameters['MODEL']['primary_radius']['id']],
+                    np.array([0,0,0]),
+                    pars_model_array[parameters['MODEL']['inclination']['id']],
+                    parameters['OTHER']['gridpoints_primary'])
+
 postAGB._set_grid()
 postAGB._set_grid_location()
 
@@ -326,19 +310,7 @@ Create the jet
 ==============
 """
 
-# jet = Cone.Stellar_jet_simple(inclination, jet_angle,
-#                               velocity_centre, velocity_edge,
-#                               jet_type)
-jet = Cone.Stellar_jet(inclination,
-                       jet_angle,
-                       velocity_centre,
-                       velocity_edge,
-                       exp_velocity,
-                       power_density,
-                       jet_type,
-                       jet_tilt=jet_tilt,
-                       jet_cavity_angle=jet_cavity_angle
-                       )
+jet = create_jet.create_jet(parameters['OTHER']['jet_type'], parameters, pars_model_array)
 
 """
 ===========================================
@@ -346,8 +318,8 @@ Create the grid for temperature and density
 ===========================================
 """
 
-jet_temperatures = np.arange(T_min, T_max+1, T_step)
-jet_density_log  = np.arange(density_log10_min, density_log10_max+0.001, density_log10_step)
+jet_temperatures = np.arange(parameters['OTHER']['T_min'], parameters['OTHER']['T_max']+1, parameters['OTHER']['T_step'])
+jet_density_log  = np.arange(parameters['OTHER']['density_log10_min'], parameters['OTHER']['density_log10_max']+0.001, parameters['OTHER']['density_log10_step'])
 jet_densities    = 10**(jet_density_log)
 
 """
@@ -360,7 +332,12 @@ Create the output folders and files
 
 Path              = "../../jet_accretion_output/"
 OutputDirObjectID = Path+object_id
-OutputDir         = OutputDirObjectID+'/'+object_id+'_'+jet_type+'_T'+str(T_min)+'_'+str(T_max)+'_'+str(T_step)+'_rho_'+str(density_log10_min)+'_'+str(density_log10_max)+'_'+str(density_log10_step)
+OutputDir         = OutputDirObjectID+'/'+object_id+'_'+parameters['OTHER']['jet_type']\
+                    +'_T'+str(parameters['OTHER']['T_min'])+'_'+str(parameters['OTHER']['T_max'])\
+                    +'_'+str(parameters['OTHER']['T_step'])+'_rho_'\
+                    +str(parameters['OTHER']['density_log10_min'])\
+                    +'_'+str(parameters['OTHER']['density_log10_max'])\
+                    +'_'+str(parameters['OTHER']['density_log10_step'])
 
 if not os.path.exists(OutputDirObjectID):
 
@@ -392,13 +369,13 @@ OutputLog.write('\n')
 OutputLog.write('Date \t %s \n' % datetime.datetime.now())
 OutputLog.write('Object: \t %s \n' % object_id)
 OutputLog.write('Balmer lines: \t %s \n' % str(balmer_lines))
-OutputLog.write('The jet type is %s \n' % jet_type)
-OutputLog.write('The inclination angle is %f degrees \n' % (inclination*180./np.pi))
-OutputLog.write('The jet angle is %f degrees\n' % (jet_angle*180./np.pi))
-OutputLog.write('The velocity at the centre of the jet is %f km/s \n' % velocity_centre)
-OutputLog.write('The velocity at the edge of the jet is %f km/s \n' % velocity_edge)
-OutputLog.write('The model is computed for jet temperatures between %dK and %dK in steps of %dK. \n' % (T_min, T_max, T_step))
-OutputLog.write('The model is computed for jet densities between 1e%dm^-3 and 1e%dm^-3 in increasing order of magnitudes of %d. \n' % (density_log10_min, density_log10_max, density_log10_step))
+OutputLog.write('The jet type is %s \n' % parameters['OTHER']['jet_type'])
+OutputLog.write('The inclination angle is %f degrees \n' % (pars_model['inclination']*180./np.pi))
+OutputLog.write('The jet angle is %f degrees\n' % (pars_model['jet_angle']*180./np.pi))
+OutputLog.write('The velocity at the centre of the jet is %f km/s \n' % pars_model['velocity_max'])
+OutputLog.write('The velocity at the edge of the jet is %f km/s \n' % pars_model['velocity_edge'])
+OutputLog.write('The model is computed for jet temperatures between %dK and %dK in steps of %dK. \n' % (parameters['OTHER']['T_min'], parameters['OTHER']['T_max'], parameters['OTHER']['T_step']))
+OutputLog.write('The model is computed for jet densities between 1e%dm^-3 and 1e%dm^-3 in increasing order of magnitudes of %d. \n' % (parameters['OTHER']['density_log10_min'], parameters['OTHER']['density_log10_max'], parameters['OTHER']['density_log10_step']))
 OutputLog.write('\n')
 OutputLog.write('\n')
 # OutputLog.write(' \n' % )
@@ -535,9 +512,13 @@ for jet_temperature in jet_temperatures:
 
             postAGB.centre      = primary_orbit[phase]['position']
             jet.jet_centre      = secondary_orbit[phase]['position']
-            postAGB._set_grid_location()
 
-            jet._set_orientation(np.array([secondary_orbit[phase]['velocity']]))
+            if parameters['OTHER']['tilt']==True:
+                
+                        jet._set_orientation(np.array([secondary_orbit[phase]['velocity']]))
+
+            postAGB._set_grid()
+            postAGB._set_grid_location()
 
             for spectrum in spectra_observed['halpha'][phase].keys():
                 ###### Iterate over all spectra with this phase
@@ -548,7 +529,7 @@ for jet_temperature in jet_temperatures:
                     ###### For each ray of light from a gridpoint on the
                     ###### post-AGB star, we calculate the absorption by the jet
 
-                    jet._set_gridpoints(coordAGB, gridpoints_LOS)
+                    jet._set_gridpoints(coordAGB, parameters['OTHER']['gridpoints_LOS'])
 
                     if jet.gridpoints is None:
                         ###### The ray does not pass through the jet
@@ -563,10 +544,10 @@ for jet_temperature in jet_temperatures:
                         jet._set_gridpoints_polar_angle()
 
                         ###### Jet velocity and density ########################
-                        jet_density_scaled      = jet.density(gridpoints_LOS)   # The scaled number density of the jet
+                        jet_density_scaled      = jet.density(parameters['OTHER']['gridpoints_LOS'])   # The scaled number density of the jet
                         jet_density             = jet_density_scaled*jet_density_max   # The number density of the jet at each gridpoint (m^-3)
-                        jet_velocity            = jet.poloidal_velocity(gridpoints_LOS, power_velocity) # The velocity of the jet at each gridpoint (km/s)
-                        jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, secondary_rad_vel) # Radial velocity of each gridpoint (km/s)
+                        jet_velocity            = jet.poloidal_velocity(parameters['OTHER']['gridpoints_LOS'], parameters['OTHER']['power_velocity']) # The velocity of the jet at each gridpoint (km/s)
+                        jet_radvel_km_per_s     = jet.radial_velocity(jet_velocity, pars_add['secondary_rad_vel']) # Radial velocity of each gridpoint (km/s)
                         jet_radvel_m_per_s      = jet_radvel_km_per_s * 1000 # Radial velocity of each gridpoint (m/s)
                         jet_delta_gridpoints_AU = np.linalg.norm(jet.gridpoints[0,:] - jet.gridpoints[1,:]) # The length of each gridpoint (AU)
                         jet_delta_gridpoints_m  = jet_delta_gridpoints_AU * AU  # The length of each gridpoint (m)
@@ -592,7 +573,7 @@ for jet_temperature in jet_temperatures:
                         # intensity_point = 0.*np.copy(spectra_background_I[phase][spectrum])
                         intensity_point = {line:np.copy(spectra_background_I[line][phase][spectrum]) for line in balmer_lines}
 
-                        for pointLOS in range(gridpoints_LOS-1):
+                        for pointLOS in range(parameters['OTHER']['gridpoints_LOS']-1):
                             # We first select the frequencies for which the current point in the jet
                             # will cause absorption
 
@@ -613,7 +594,7 @@ for jet_temperature in jet_temperatures:
                     for line in balmer_lines:
                         ###### add the spectrum for this ray to the lines
 
-                        intensity[line] += gridpoints_primary**-1 * np.array(intensity_point[line])
+                        intensity[line] += parameters['OTHER']['gridpoints_primary']**-1 * np.array(intensity_point[line])
 
                 with open(OutputDir+'EW_model.txt', 'a') as f_out:
 

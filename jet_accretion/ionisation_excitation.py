@@ -217,9 +217,9 @@ if __name__=='__main__':
     E_levels_H          = {1: np.array([0, 10.2, 12.1, 12.76]), 2: np.array([0])}
     degeneracy_H        = {1: np.array([2, 8, 18, 32]), 2: np.array([1])}
     P                   = 1.5
-    n_el                = 5.3e+14
+    n_el                = 5.3e+18
     Temp_arr            = np.arange(1e2,2e4, 1e2)
-    n                   = 2e15
+    n                   = 2e14
     print('test', n_electron_for_hydrogen(E_ionisation_H, E_levels_H, degeneracy_H, Temp, n))
     fraction_HII_over_H = saha_E(E_ionisation_H, E_levels_H, degeneracy_H, Temp, 2, n_e=n_el)
     print("The fraction of ionised hydrogen for T = %.f and Pe = %.3f is" \

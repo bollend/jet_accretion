@@ -270,6 +270,11 @@ for phase in phases:
                 axes[numbers[line][0], numbers[line][1]].scatter(phase,EW_line,color=colors[line])
                 axes[numbers[line][0], numbers[line][1]].errorbar(phase,EW_line, yerr=uncertainty_EW,color=colors[line])
 
+axes[1,0].set_xlabel(r'Orbital phase (0-100)')
+axes[1,1].set_xlabel(r'Orbital phase (0-100)')
+axes[0,0].set_ylabel(r'EW ($\lambda$)')
+axes[0,1].set_ylabel(r'EW ($\lambda$)')
+
 OutputEW.write('\n')
 OutputEW.close()
 plt.show()
@@ -318,6 +323,15 @@ axes[1,0].axhline(0)
 axes[1,0].axhline(1)
 axes[1,1].axhline(0)
 axes[1,1].axhline(1)
+
+axes[0,0].title.set_text('halpha')
+axes[0,1].title.set_text('hbeta')
+axes[1,0].title.set_text('hgamma')
+axes[1,1].title.set_text('hdelta')
+axes[1,0].set_xlabel(r'Orbital phase (0-100)')
+axes[1,1].set_xlabel(r'Orbital phase (0-100)')
+axes[0,0].set_ylabel(r'EW ($\lambda$)')
+axes[1,0].set_ylabel(r'EW ($\lambda$)')
 plt.show()
 
 
@@ -382,6 +396,16 @@ for jet_temperature in jet_temperatures:
             axes[1,0].axhline(1)
             axes[1,1].axhline(0)
             axes[1,1].axhline(1)
+
+            axes[0,0].title.set_text('halpha')
+            axes[0,1].title.set_text('hbeta')
+            axes[1,0].title.set_text('hgamma')
+            axes[1,1].title.set_text('hdelta')
+            axes[1,0].set_xlabel(r'Orbital phase (0-100)')
+            axes[1,1].set_xlabel(r'Orbital phase (0-100)')
+            axes[0,0].set_ylabel(r'EW ($\lambda$)')
+            axes[1,0].set_ylabel(r'EW ($\lambda$)')
+
             plt.show()
 OutputEW.close()
 

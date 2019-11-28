@@ -65,7 +65,8 @@ with open(InputFile, 'r') as f:
         # chi_squared_list[i]      = float(data_line[2].rsplit('\n')[0])
 
 jet_temperatures = np.array(jet_temperatures_list)
-jet_density_log  = np.log10(np.array(jet_density_log_list))
+jet_density_log  = np.log10(np.array(jet_density_log_list))#*(2.527e-6/5.01e15))
+print(jet_density_log)
 T = 0
 rho = 0
 chi2 = 0
@@ -110,6 +111,7 @@ axes[0].legend()
 
 axes[0].set_xlabel(r'Temperature (K)')
 axes[0].set_ylabel(r'log(density) ($\log$(m$^{-3}$))')
+# axes[0].set_ylabel(r'log of mass acrretion rate ($\log\dot{M_\odot}$)')
 fig.colorbar(im1, label='chi-squared', ax=axes[0])
 # plt.show()
 
@@ -134,6 +136,7 @@ cont2 = axes[1].contour(xi,yi, probabilities_normalised.reshape(xi.shape))
 # axes[1].clabel(cont2, inline=True, fontsize=10)
 axes[1].set_xlabel(r'Temperature (K)')
 axes[1].set_ylabel(r'log(density) ($\log$(m$^{-3}$))')
+# axes[1].set_ylabel(r'log of mass acrretion rate ($\log\dot{M_\odot}$)')
 fig.colorbar(im2, label='probability', ax=axes[1])
 
 
@@ -170,6 +173,7 @@ im2   = axes.pcolormesh(xi,yi, probabilities_normalised.reshape(xi.shape), shadi
 # axes.clabel(cont2, inline=True, fontsize=10)
 axes.set_xlabel(r'Temperature (K)')
 axes.set_ylabel(r'log(density) ($\log$(m$^{-3}$))')
+# axes.set_ylabel(r'log of mass acrretion rate ($\log\dot{M_\odot}$)')
 fig.colorbar(im2, label='probability', ax=axes)
 plt.show()
 
@@ -264,7 +268,9 @@ fill_colors = ['darkblue', 'blue', 'lightblue']
 axes[0].set_xlabel(r'Temperature (K)', fontsize=fts, fontweight='normal')
 axes[1].set_xlabel(r'density ($\log$(m$^{-3}$))', fontsize=fts, fontweight='normal')
 
-axes[0].set_ylabel(r'$\mathrm{Probability\ density}$', fontsize=fts, fontweight='normal')
+# axes[1].set_xlabel(r'log of mass acrretion rate ($\log\dot{M_\odot}$)')
+axes[0].set_ylabel(r'$\mathrm{Probability\ Temperature}$', fontsize=fts, fontweight='normal')
+axes[1].set_ylabel(r'$\mathrm{Probability\ density}$', fontsize=fts, fontweight='normal')
 
 axes[0].plot(jet_temperatures, probabilities_temperature)
 axes[0].fill_between(jet_temperatures[prob_interval_indices_T[0]], probabilities_temperature[prob_interval_indices_T[0]], color=fill_colors[0])
